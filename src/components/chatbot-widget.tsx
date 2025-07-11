@@ -230,7 +230,7 @@ export function ChatbotWidget() {
                                     <Link href={link.href} onClick={() => setIsOpen(false)}>
                                         <LinkIcon className="h-3 w-3 mr-2" />
                                         {link.text}
-                                    </A>
+                                    </Link>
                                 </Button>
                             ))}
                         </div>

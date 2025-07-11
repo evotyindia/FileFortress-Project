@@ -335,7 +335,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
             ) : (
                  <div className="space-y-2">
                     <Label htmlFor="security-key-decrypt" className="text-lg">Security Key</Label>
-                    <div className="grid sm:grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
+                    <div className="grid sm:grid-cols-[1fr_auto_1fr] items-center gap-4">
                         <Input
                             id="security-key-decrypt"
                             type="text"
@@ -345,10 +345,10 @@ export function FileHandler({ mode }: FileHandlerProps) {
                             required
                             className="h-12 text-lg"
                         />
-                         <div className="flex items-center gap-2">
-                            <hr className="w-4 border-border sm:hidden" />
-                            <span className="text-xs text-muted-foreground font-semibold">OR</span>
-                             <hr className="w-4 border-border sm:hidden" />
+                         <div className="flex items-center justify-center gap-2">
+                            <hr className="w-full border-border sm:hidden" />
+                            <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">OR</span>
+                             <hr className="w-full border-border sm:hidden" />
                         </div>
                         <input
                             type="file"

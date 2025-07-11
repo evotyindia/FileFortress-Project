@@ -29,7 +29,7 @@ export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-background border-t z-50 flex justify-around items-center">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-background border-t z-50 flex justify-around items-center pb-[env(safe-area-inset-bottom)]">
       {mainNavLinks.map((link) => {
         const isActive = pathname === link.href;
         return (
@@ -44,7 +44,7 @@ export function MobileBottomNav() {
             <div className={cn("p-2 rounded-full", isActive && "bg-primary/10")}>
                 <link.icon className="w-6 h-6" />
             </div>
-            <span>{link.label}</span>
+            <span className="text-xs mt-0.5">{link.label}</span>
           </Link>
         );
       })}
@@ -55,7 +55,7 @@ export function MobileBottomNav() {
              <div className="p-2 rounded-full">
                 <MoreHorizontal className="w-6 h-6" />
             </div>
-            <span>More</span>
+            <span className="text-xs mt-0.5">More</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="top" className="mb-2 w-40">

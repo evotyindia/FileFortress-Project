@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User, Loader2, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { chatbot } from '@/ai/flows/chatbot-flow';
 import { cn } from '@/lib/utils';
 import type { ChatbotOutput } from '@/ai/flows/chatbot-flow';
+import { useToast } from '@/hooks/use-toast';
+
 
 type Message = {
   role: 'user' | 'bot';
@@ -16,6 +18,37 @@ type Message = {
 };
 
 const CHAT_MESSAGES_KEY = 'chatMessages';
+
+const EncryptedMessage = ({ text }: { text: string }) => {
+    const { toast } = useToast();
+    const encryptedText = text.match(/ENCRYPTED_MESSAGE\[(.*)\]/)?.[1];
+  
+    if (!encryptedText) {
+      return <p className="text-sm break-words">{text}</p>;
+    }
+  
+    const handleCopy = () => {
+      navigator.clipboard.writeText(encryptedText);
+      toast({ title: "Encrypted message copied to clipboard." });
+    };
+
+    const parts = text.split(/ENCRYPTED_MESSAGE\[.*\]/);
+  
+    return (
+      <div className="text-sm break-words">
+        {parts[0]}
+        <div className="my-2 p-3 rounded-lg bg-background/50 border">
+            <div className="flex justify-between items-center">
+                <span className="font-code text-muted-foreground tracking-wider">**********</span>
+                <Button variant="ghost" size="icon" onClick={handleCopy} className="h-8 w-8">
+                    <Copy className="h-4 w-4" />
+                </Button>
+            </div>
+        </div>
+        {parts[1]}
+      </div>
+    );
+  };
 
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -125,7 +158,11 @@ export function ChatbotWidget() {
                 <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? "justify-end" : "justify-start")}>
                   {message.role === 'bot' && <Bot className="w-6 h-6 text-primary flex-shrink-0" />}
                   <div className={cn("p-3 rounded-lg max-w-[80%]", message.role === 'user' ? "bg-primary text-primary-foreground" : "bg-muted")}>
-                    <p className="text-sm break-words">{message.text}</p>
+                     {message.role === 'bot' && message.text.includes("ENCRYPTED_MESSAGE") ? (
+                        <EncryptedMessage text={message.text} />
+                      ) : (
+                        <p className="text-sm break-words">{message.text}</p>
+                      )}
                   </div>
                    {message.role === 'user' && <User className="w-6 h-6 text-muted-foreground flex-shrink-0" />}
                 </div>

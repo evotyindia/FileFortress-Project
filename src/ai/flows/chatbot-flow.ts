@@ -33,19 +33,28 @@ export type ChatbotOutput = z.infer<typeof ChatbotOutputSchema>;
 const encryptTextTool = ai.defineTool(
   {
     name: 'encryptText',
-    description: 'Encrypts a given piece of text using a password and a security key. Returns the encrypted text.',
+    description: 'Encrypts a given piece of text. This tool automatically generates a secure password and key, and returns the encrypted text along with the credentials needed for decryption.',
     inputSchema: z.object({
       text: z.string().describe('The text to encrypt.'),
-      password: z.string().describe('The password to use for encryption.'),
-      securityKey: z.string().describe('The security key to use for encryption.'),
     }),
-    outputSchema: z.string(),
+    outputSchema: z.object({
+        encryptedText: z.string(),
+        password: z.string(),
+        securityKey: z.string(),
+    }),
   },
-  async ({text, password, securityKey}) => {
+  async ({text}) => {
     try {
-      return await encryptText(text, password, securityKey);
+      const password = generateSecurityKey().substring(0, 16); // Use a portion for a password
+      const securityKey = generateSecurityKey();
+      const encryptedText = await encryptText(text, password, securityKey);
+      return { encryptedText, password, securityKey };
     } catch (e: any) {
-      return `Encryption failed: ${e.message}`;
+      return {
+        encryptedText: `Encryption failed: ${e.message}`,
+        password: '',
+        securityKey: '',
+      };
     }
   }
 );
@@ -85,7 +94,7 @@ const generateKeyTool = ai.defineTool(
 
 // //////////////////////////////////////////////////////////////////////////////
 // Main Chatbot Flow
-// //////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////****************************
 
 const chatbotPrompt = ai.definePrompt({
   name: 'chatbotPrompt',
@@ -126,11 +135,29 @@ const chatbotPrompt = ai.definePrompt({
 
   ## Tool Usage Guidelines
 
-  - If a user asks you to encrypt or decrypt text, you MUST have the text, a password, AND a security key.
-  - If they are missing any of these three pieces of information, ask for the missing information before calling the tool.
-  - If they ask you to generate a security key, use the generateSecurityKey tool.
-  - After performing an encryption or decryption, remind the user that this is just for demonstration and that for real files, they should use the Encrypt/Decrypt pages.
-  - Do not make up passwords or keys. Always ask the user to provide them.
+  ### Encryption
+  - If a user asks you to encrypt text, you ONLY need the text itself. You do not need a password or key from them.
+  - Call the 'encryptText' tool with the user's text.
+  - The tool will return the encrypted text, a generated password, and a generated security key.
+  - You MUST then present this information to the user.
+  - **CRITICAL FORMATTING**: Your response for encryption MUST follow this exact format. Do not add any other text.
+    - Start with a short sentence like "I've encrypted your message. Here are the details:"
+    - Then, on new lines, provide the password and security key.
+    - Then, provide the encrypted message in this exact format: \`ENCRYPTED_MESSAGE[the_full_encrypted_text_string_here]\`
+  - Example Response:
+    "I've encrypted your message. Here are the details:
+    Password: \`randomly_generated_password\`
+    Security Key: \`randomly_generated_key\`
+    You will need BOTH of these to decrypt your message later.
+    ENCRYPTED_MESSAGE[a_very_long_encrypted_string_would_go_here]"
+
+  ### Decryption
+  - If a user asks you to decrypt text, you MUST have the encrypted text, a password, AND a security key.
+  - If they are missing any of these three pieces of information, ask for the missing information before calling the 'decryptText' tool.
+  - After performing a decryption, remind the user that this is just for demonstration and that for real files, they should use the Encrypt/Decrypt pages.
+
+  ### Other Tools
+  - If they ask you to generate a security key, use the 'generateSecurityKey' tool.
   `,
   prompt: `User message: {{{message}}}`,
 });

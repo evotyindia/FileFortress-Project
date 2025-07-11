@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download } from "lucide-react";
+import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, ArrowLeft, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Mode = "encrypt" | "decrypt";
@@ -17,12 +17,19 @@ interface FileHandlerProps {
   mode: Mode;
 }
 
+interface EncryptedResult {
+  blob: Blob;
+  filename: string;
+  securityKey: string;
+}
+
 export function FileHandler({ mode }: FileHandlerProps) {
   const [file, setFile] = useState<File | null>(null);
   const [password, setPassword] = useState("");
   const [securityKey, setSecurityKey] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [encryptedResult, setEncryptedResult] = useState<EncryptedResult | null>(null);
   const { toast } = useToast();
 
   const handleFileChange = (files: FileList | null) => {
@@ -67,6 +74,33 @@ export function FileHandler({ mode }: FileHandlerProps) {
     toast({ title: "Security key copied to clipboard." });
   };
 
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadKey = () => {
+    if (!encryptedResult) return;
+    const keyFileContent = `FileFortress Security Key\n\n${encryptedResult.securityKey}\n\nIMPORTANT: Store this key and your password in a safe place. You will need BOTH to decrypt your file. If you lose them, your file cannot be recovered.`;
+    const blob = new Blob([keyFileContent], { type: 'text/plain' });
+    const filename = `${encryptedResult.filename.replace('.fortress', '')}_security_key.txt`;
+    downloadBlob(blob, filename);
+  };
+
+  const resetForm = () => {
+    setFile(null);
+    setPassword("");
+    setSecurityKey("");
+    setEncryptedResult(null);
+    setIsProcessing(false);
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!file || !password || !securityKey) {
@@ -80,36 +114,22 @@ export function FileHandler({ mode }: FileHandlerProps) {
 
     setIsProcessing(true);
     try {
-      let resultBlob: Blob;
-      let resultFilename: string;
-
       if (mode === 'encrypt') {
         const { blob, filename } = await encryptFile(file, password, securityKey);
-        resultBlob = blob;
-        resultFilename = filename;
+        setEncryptedResult({ blob, filename, securityKey });
         toast({
           title: "Encryption Successful",
           description: "Your file has been securely encrypted.",
         });
       } else {
         const { blob, metadata } = await decryptFile(file, password, securityKey);
-        resultBlob = blob;
-        resultFilename = metadata.name;
+        downloadBlob(blob, metadata.name);
         toast({
           title: "Decryption Successful",
-          description: "Your file has been successfully decrypted.",
+          description: "Your file has been successfully decrypted and downloaded.",
         });
+        resetForm();
       }
-      
-      const url = URL.createObjectURL(resultBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = resultFilename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
     } catch (error) {
       console.error(`${mode} error:`, error);
       toast({
@@ -117,10 +137,63 @@ export function FileHandler({ mode }: FileHandlerProps) {
         title: `${mode === 'encrypt' ? 'Encryption' : 'Decryption'} Failed`,
         description: error instanceof Error ? error.message : "An unknown error occurred.",
       });
-    } finally {
       setIsProcessing(false);
     }
+    // No longer setting isProcessing to false for encryption here, it happens on reset
   };
+
+  if (mode === 'encrypt' && encryptedResult) {
+    return (
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader className="text-center">
+          <div className="mx-auto bg-green-100 dark:bg-green-900/50 p-4 rounded-full w-fit mb-4">
+            <ShieldCheck className="w-16 h-16 text-green-500" />
+          </div>
+          <CardTitle className="font-headline text-4xl">Encryption Complete</CardTitle>
+          <CardDescription className="text-lg pt-1">
+            Your file has been successfully secured.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-8">
+            <div className="grid sm:grid-cols-2 gap-6">
+                 <Button
+                    size="lg"
+                    className="w-full text-lg h-20 flex-col gap-1"
+                    onClick={() => downloadBlob(encryptedResult.blob, encryptedResult.filename)}
+                    >
+                    <Download className="w-6 h-6 mb-1" />
+                    Download Encrypted File
+                </Button>
+                <Button
+                    size="lg"
+                    variant="secondary"
+                    className="w-full text-lg h-20 flex-col gap-1"
+                    onClick={handleDownloadKey}
+                    >
+                    <FileText className="w-6 h-6 mb-1" />
+                    Download Security Key
+                </Button>
+            </div>
+          
+            <Alert variant="destructive" className="mt-6 text-base p-5">
+                <AlertTriangle className="h-5 w-5" />
+                <AlertTitle className="font-headline text-lg">Crucial: Save Your Keys!</AlertTitle>
+                <AlertDescription className="mt-2">
+                You MUST save both your password and the security key file.
+                <strong> Losing either will result in permanent data loss.</strong>
+                </AlertDescription>
+            </Alert>
+            
+            <div className="text-center">
+                <Button variant="link" size="lg" className="text-lg" onClick={resetForm}>
+                    <RefreshCw className="mr-2 h-5 w-5" />
+                    Encrypt Another File
+                </Button>
+            </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-3xl mx-auto">
@@ -155,7 +228,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 <File className="w-16 h-16 text-primary"/>
                 <span className="font-medium text-lg mt-2">{file.name}</span>
                 <span className="text-base text-muted-foreground">{Math.round(file.size / 1024)} KB</span>
-                <Button variant="link" size="sm" onClick={(e) => { e.stopPropagation(); setFile(null); }}>
+                <Button variant="link" size="sm" onClick={(e) => { e.stopPropagation(); resetForm(); }}>
                   Remove file
                 </Button>
               </div>

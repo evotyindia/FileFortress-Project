@@ -32,7 +32,7 @@ export function Navbar() {
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-2">
-            <nav className="hidden md:flex items-center justify-end space-x-6 text-sm font-medium">
+            <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
               {navLinks.map(link => (
                 <Link
                   key={link.href}
@@ -45,13 +45,11 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <ThemeToggle />
+               <ThemeToggle />
             </nav>
             
-            <div className="md:hidden flex items-center">
-                <div className="mr-2">
-                  <ThemeToggle />
-                </div>
+            <div className="md:hidden flex items-center gap-2">
+                <ThemeToggle />
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -92,9 +90,6 @@ export function Navbar() {
                                   )
                                 })}
                             </nav>
-                            <div className="p-4 mt-auto border-t">
-                              <ThemeToggle />
-                            </div>
                         </div>
                     </SheetContent>
                 </Sheet>

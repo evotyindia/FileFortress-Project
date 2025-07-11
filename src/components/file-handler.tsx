@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw, FileKey, Wand2, Eye, EyeOff } from "lucide-react";
+import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw, FileKey, Wand2, Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { generateFilename } from "@/ai/flows/generate-filename-flow";
 
@@ -37,6 +37,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
   const [file, setFile] = useState<File | null>(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPasswordBlurred, setConfirmPasswordBlurred] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [securityKey, setSecurityKey] = useState("");
@@ -161,6 +162,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
     setFile(null);
     setPassword("");
     setConfirmPassword("");
+    setConfirmPasswordBlurred(false);
     setSecurityKey("");
     setEncryptedResult(null);
     setIsProcessing(false);
@@ -425,6 +427,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    onBlur={() => setConfirmPasswordBlurred(true)}
                     required
                     className="h-12 text-lg pr-12"
                   />
@@ -433,6 +436,18 @@ export function FileHandler({ mode }: FileHandlerProps) {
                     <span className="sr-only">Toggle password visibility</span>
                   </Button>
                 </div>
+                 {confirmPasswordBlurred && confirmPassword && (
+                  <div className={cn(
+                    "flex items-center text-sm pt-1",
+                    password === confirmPassword ? "text-green-600" : "text-destructive"
+                  )}>
+                    {password === confirmPassword ? 
+                      <CheckCircle2 className="w-4 h-4 mr-2" /> :
+                      <XCircle className="w-4 h-4 mr-2" />
+                    }
+                    {password === confirmPassword ? "Passwords match" : "Passwords do not match"}
+                  </div>
+                )}
               </div>
             )}
             

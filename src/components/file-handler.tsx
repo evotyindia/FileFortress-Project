@@ -335,16 +335,21 @@ export function FileHandler({ mode }: FileHandlerProps) {
             ) : (
                  <div className="space-y-2">
                     <Label htmlFor="security-key-decrypt" className="text-lg">Security Key</Label>
-                    <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="grid sm:grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
                         <Input
                             id="security-key-decrypt"
                             type="text"
-                            placeholder="Enter or upload the security key"
+                            placeholder="Enter security key"
                             value={securityKey}
                             onChange={(e) => setSecurityKey(e.target.value)}
                             required
                             className="h-12 text-lg"
                         />
+                         <div className="flex items-center gap-2">
+                            <hr className="w-4 border-border sm:hidden" />
+                            <span className="text-xs text-muted-foreground font-semibold">OR</span>
+                             <hr className="w-4 border-border sm:hidden" />
+                        </div>
                         <input
                             type="file"
                             accept=".txt"
@@ -352,7 +357,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                             onChange={handleKeyFileChange}
                             className="hidden"
                         />
-                        <Button type="button" variant="secondary" className="h-12 text-base px-4" onClick={() => keyFileInputRef.current?.click()}>
+                        <Button type="button" variant="secondary" className="h-12 text-base px-4 w-full sm:w-auto" onClick={() => keyFileInputRef.current?.click()}>
                            <FileKey className="mr-2 h-5 w-5"/> Upload Key File
                         </Button>
                     </div>

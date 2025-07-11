@@ -58,11 +58,11 @@ export function MobileBottomNav() {
             <span className="text-xs mt-0.5">More</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" side="top" className="mb-2 w-40">
+        <DropdownMenuContent align="end" side="top" className="mb-2 w-48">
            {moreNavLinks.map(link => (
-            <DropdownMenuItem key={link.href} asChild>
-                <Link href={link.href} className="flex items-center gap-2">
-                    <link.icon className="w-4 h-4" />
+            <DropdownMenuItem key={link.href} asChild className="p-3 text-base">
+                <Link href={link.href} className="flex items-center gap-3">
+                    <link.icon className="w-5 h-5" />
                     <span>{link.label}</span>
                 </Link>
             </DropdownMenuItem>

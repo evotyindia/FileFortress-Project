@@ -3,18 +3,24 @@
 
 import { useEffect } from 'react';
 
-const SESSION_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+const SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 const LAST_ACTIVE_KEY = 'lastActiveTime';
 
 export function MainLayoutClient({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
+    const handleActivity = () => {
+      sessionStorage.setItem(LAST_ACTIVE_KEY, Date.now().toString());
+    };
+    
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
-        sessionStorage.setItem(LAST_ACTIVE_KEY, Date.now().toString());
+        handleActivity();
+      } else {
+        checkSession();
       }
     };
-
+    
     const checkSession = () => {
       const lastActiveTime = sessionStorage.getItem(LAST_ACTIVE_KEY);
       if (lastActiveTime) {
@@ -29,17 +35,27 @@ export function MainLayoutClient({ children }: { children: React.ReactNode }) {
       }
     };
 
-    // Check session when the component mounts (i.e., page is loaded/revisited)
+    // Initial check and setup
     checkSession();
+    handleActivity(); // Set initial activity time
 
-    // Set timestamp when tab becomes inactive or is closed
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    // 'pagehide' is a more reliable event for when a user navigates away or closes a tab
-    window.addEventListener('pagehide', handleVisibilityChange);
+    // Set up event listeners
+    window.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', handleActivity); // More reliable for closing/navigating away
+    window.addEventListener('mousemove', handleActivity);
+    window.addEventListener('keydown', handleActivity);
+    window.addEventListener('scroll', handleActivity);
+
+    // Set up an interval to check periodically, as a fallback
+    const intervalId = setInterval(checkSession, 60 * 1000); // Check every minute
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('pagehide', handleVisibilityChange);
+      window.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('pagehide', handleActivity);
+      window.removeEventListener('mousemove', handleActivity);
+      window.removeEventListener('keydown', handleActivity);
+      window.removeEventListener('scroll', handleActivity);
+      clearInterval(intervalId);
     };
   }, []);
 

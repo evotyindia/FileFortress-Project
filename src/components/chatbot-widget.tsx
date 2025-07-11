@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useRef, useEffect } from 'react';
@@ -55,8 +56,13 @@ export function ChatbotWidget() {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Scroll to bottom when new messages are added
   useEffect(() => {
@@ -108,6 +114,10 @@ export function ChatbotWidget() {
       setIsLoading(false);
     }
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <>

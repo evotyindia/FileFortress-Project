@@ -82,30 +82,32 @@ export function DemoHandler() {
       {/* Input Card */}
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="font-headline">1. Your Data</CardTitle>
+          <CardTitle className="font-headline text-2xl">1. Your Data</CardTitle>
           <CardDescription>Enter the text and keys for the demo.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="original-text">Original Text</Label>
+            <Label htmlFor="original-text" className="text-base">Original Text</Label>
             <Textarea
               id="original-text"
               value={originalText}
               onChange={(e) => setOriginalText(e.target.value)}
               placeholder="Enter text to encrypt"
+              className="text-base"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-base">Password</Label>
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="text-base"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="security-key">Security Key</Label>
+            <Label htmlFor="security-key" className="text-base">Security Key</Label>
             <div className="flex items-center gap-2">
                 <Input
                   id="security-key"
@@ -113,12 +115,14 @@ export function DemoHandler() {
                   placeholder="Generate or enter a key"
                   value={securityKey}
                   onChange={(e) => setSecurityKey(e.target.value)}
+                  className="text-base"
                 />
                 <Button type="button" variant="outline" onClick={() => handleCopyKey(securityKey, 'Security key')} size="icon" disabled={!securityKey}>
                     <Copy className="w-4 h-4" />
                 </Button>
-                <Button type="button" variant="secondary" onClick={handleGenerateKey}>
-                    <Key className="w-4 h-4" />
+                <Button type="button" variant="secondary" onClick={handleGenerateKey} className="px-3">
+                    <Key className="w-4 h-4 mr-2" />
+                    Generate
                 </Button>
             </div>
           </div>
@@ -128,42 +132,42 @@ export function DemoHandler() {
       {/* Actions and Results */}
       <div className="w-full space-y-8 flex flex-col items-center">
         <div className="flex flex-col items-center w-full">
-            <Button onClick={handleEncrypt} disabled={isProcessing} className="w-full">
+            <Button onClick={handleEncrypt} disabled={isProcessing} className="w-full text-base py-6">
             {isProcessing ? <Loader2 className="animate-spin" /> : 'Encrypt'}
             <Lock className="w-4 h-4 ml-2" />
             </Button>
-            <ArrowRight className="w-8 h-8 my-4 text-muted-foreground transform -rotate-90 md:rotate-0" />
+            <ArrowRight className="w-10 h-10 my-6 text-muted-foreground transform -rotate-90 md:rotate-0" />
             <Card className="w-full">
                 <CardHeader>
-                    <CardTitle className="font-headline">2. Encrypted</CardTitle>
+                    <CardTitle className="font-headline text-2xl">2. Encrypted</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Textarea 
                     readOnly 
                     value={encryptedText} 
-                    className="font-code min-h-[120px] text-xs"
+                    className="font-code min-h-[140px] text-sm"
                     placeholder="Encrypted output will appear here..."
                     />
-                    <Button variant="link" size="sm" className="p-0 h-auto mt-1" onClick={() => handleCopyKey(encryptedText, 'Encrypted text')}>Copy</Button>
+                    <Button variant="link" size="sm" className="p-0 h-auto mt-2 text-base" onClick={() => handleCopyKey(encryptedText, 'Encrypted text')}>Copy</Button>
                 </CardContent>
             </Card>
         </div>
 
-        <div className="flex flex-col items-center w-full">
-            <Button onClick={handleDecrypt} disabled={isProcessing || !encryptedText} className="w-full">
+        <div className="flex flex-col items-center w-full mt-8">
+            <Button onClick={handleDecrypt} disabled={isProcessing || !encryptedText} className="w-full text-base py-6">
                 {isProcessing ? <Loader2 className="animate-spin" /> : 'Decrypt'}
                 <Unlock className="w-4 h-4 ml-2" />
             </Button>
-            <ArrowRight className="w-8 h-8 my-4 text-muted-foreground transform -rotate-90 md:rotate-0" />
+            <ArrowRight className="w-10 h-10 my-6 text-muted-foreground transform -rotate-90 md:rotate-0" />
             <Card className="w-full">
                 <CardHeader>
-                    <CardTitle className="font-headline">3. Decrypted</CardTitle>
+                    <CardTitle className="font-headline text-2xl">3. Decrypted</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Textarea 
                     readOnly 
                     value={decryptedText} 
-                    className="min-h-[120px]" 
+                    className="min-h-[140px] text-base" 
                     placeholder="Decrypted text will appear here..."
                     />
                 </CardContent>
@@ -174,11 +178,11 @@ export function DemoHandler() {
       {/* Explanation Card */}
       <Card className="w-full md:col-start-3 md:row-start-1">
         <CardHeader>
-          <CardTitle className="font-headline">How It Works</CardTitle>
+          <CardTitle className="font-headline text-2xl">How It Works</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm text-muted-foreground">
+        <CardContent className="space-y-4 text-base text-muted-foreground">
           <p>This demo shows the end-to-end encryption process that happens entirely in your browser.</p>
-          <ol className="list-decimal list-inside space-y-2">
+          <ol className="list-decimal list-inside space-y-3">
             <li><strong>Input:</strong> Your text, password, and security key are combined.</li>
             <li><strong>Key Derivation:</strong> A strong encryption key is derived from your inputs using a process called PBKDF2. This makes it hard to guess the password.</li>
             <li><strong>Encryption:</strong> The derived key is used with the AES-GCM algorithm to encrypt your text into an unreadable format.</li>

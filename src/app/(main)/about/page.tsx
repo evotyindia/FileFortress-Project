@@ -9,66 +9,66 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="container mx-auto px-4 py-8 md:py-16">
+    <div className="container mx-auto px-4 py-12 md:py-20">
       <div className="max-w-4xl mx-auto">
         <section className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold font-headline">About FileFortress</h1>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <h1 className="text-4xl md:text-6xl font-bold font-headline">About FileFortress</h1>
+          <p className="mt-4 text-lg md:text-xl text-muted-foreground">
             Your personal digital vault, built on privacy and trust.
           </p>
         </section>
 
-        <section className="mt-16 space-y-8">
+        <section className="mt-20 space-y-10">
           <Card>
             <CardHeader>
-              <CardTitle className="font-headline text-2xl">Our Mission</CardTitle>
+              <CardTitle className="font-headline text-3xl">Our Mission</CardTitle>
             </CardHeader>
-            <CardContent className="text-muted-foreground space-y-4">
+            <CardContent className="text-muted-foreground space-y-4 text-lg">
               <p>
                 In an era where data privacy is increasingly under threat, FileFortress was created with a simple yet powerful mission: to provide an easy-to-use, highly secure, and completely private way for anyone to encrypt their files. We believe that you should have exclusive control over your data. Our tool empowers you to be the sole keeper of your digital secrets, without having to trust a third party with your sensitive information.
               </p>
             </CardContent>
           </Card>
 
-          <h2 className="text-3xl font-bold font-headline text-center pt-8">Our Security Philosophy</h2>
-          <div className="grid md:grid-cols-3 gap-8 text-center">
+          <h2 className="text-4xl font-bold font-headline text-center pt-8">Our Security Philosophy</h2>
+          <div className="grid md:grid-cols-3 gap-10 text-center">
             <div className="flex flex-col items-center">
-              <div className="p-4 bg-primary/10 rounded-full mb-4">
-                <Cpu className="w-8 h-8 text-primary" />
+              <div className="p-5 bg-primary/10 rounded-full mb-5">
+                <Cpu className="w-10 h-10 text-primary" />
               </div>
-              <h3 className="font-headline text-xl font-semibold">Client-Side First</h3>
-              <p className="text-muted-foreground mt-2">
+              <h3 className="font-headline text-2xl font-semibold">Client-Side First</h3>
+              <p className="text-muted-foreground mt-2 text-base">
                 Every cryptographic operation—encryption, decryption, and key derivation—happens directly in your web browser. Your files and keys are never transmitted to, or stored on, our servers.
               </p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="p-4 bg-primary/10 rounded-full mb-4">
-                <ServerOff className="w-8 h-8 text-primary" />
+              <div className="p-5 bg-primary/10 rounded-full mb-5">
+                <ServerOff className="w-10 h-10 text-primary" />
               </div>
-              <h3 className="font-headline text-xl font-semibold">Zero-Knowledge</h3>
-              <p className="text-muted-foreground mt-2">
+              <h3 className="font-headline text-2xl font-semibold">Zero-Knowledge</h3>
+              <p className="text-muted-foreground mt-2 text-base">
                 We know nothing about your data. Since we never see your files or your keys, we cannot access, share, or lose them. The privacy of your data is mathematically guaranteed.
               </p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="p-4 bg-primary/10 rounded-full mb-4">
-                <ShieldCheck className="w-8 h-8 text-primary" />
+              <div className="p-5 bg-primary/10 rounded-full mb-5">
+                <ShieldCheck className="w-10 h-10 text-primary" />
               </div>
-              <h3 className="font-headline text-xl font-semibold">Industry-Standard Crypto</h3>
-              <p className="text-muted-foreground mt-2">
+              <h3 className="font-headline text-2xl font-semibold">Industry-Standard Crypto</h3>
+              <p className="text-muted-foreground mt-2 text-base">
                 We use the Web Crypto API, a standardized and audited browser technology, to perform all operations. We employ AES-GCM for encryption and PBKDF2 for key stretching, trusted standards in cybersecurity.
               </p>
             </div>
           </div>
         </section>
 
-        <section className="mt-16">
+        <section className="mt-20">
           <Card>
             <CardHeader>
-              <CardTitle className="font-headline text-2xl">How Encryption Works</CardTitle>
+              <CardTitle className="font-headline text-3xl">How Encryption Works</CardTitle>
             </CardHeader>
-            <CardContent className="text-muted-foreground space-y-4">
-              <ol className="list-decimal list-inside space-y-2">
+            <CardContent className="text-muted-foreground space-y-4 text-lg">
+              <ol className="list-decimal list-inside space-y-3">
                 <li>
                   <strong>Key Derivation:</strong> When you enter a password and security key, we don't use them directly. Instead, we combine them and feed them into a Key Derivation Function (PBKDF2). This function performs thousands of hashing rounds to produce a strong, uniform 256-bit encryption key. This process makes password guessing extremely difficult and time-consuming for an attacker.
                 </li>

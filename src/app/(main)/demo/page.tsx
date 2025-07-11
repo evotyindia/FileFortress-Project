@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 
 export default function DemoPage() {
   return (
-    <div className="container mx-auto px-4 py-8 md:py-16">
-       <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold font-headline">
+    <div className="container mx-auto px-4 py-12 md:py-20">
+       <div className="text-center mb-16">
+        <h1 className="text-4xl md:text-6xl font-bold font-headline">
           Encryption in Action
         </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+        <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
           This interactive demo shows you exactly how FileFortress protects your data, all within your browser.
         </p>
       </div>

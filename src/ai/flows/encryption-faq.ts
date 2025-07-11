@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview A GenAI-powered chatbot to answer user questions about encryption, passwords, and FileFortress.
+ * @fileOverview This flow is deprecated and has been replaced by chatbot-flow.ts
  *
  * - encryptionFAQChatbot - A function that handles the chatbot interaction.
  * - EncryptionFAQInput - The input type for the encryptionFAQChatbot function (just the user's message).

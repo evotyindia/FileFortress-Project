@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { encryptionFAQChatbot } from '@/ai/flows/encryption-faq';
+import { chatbot } from '@/ai/flows/chatbot-flow';
 import { cn } from '@/lib/utils';
-import type { EncryptionFAQOutput } from '@/ai/flows/encryption-faq';
+import type { ChatbotOutput } from '@/ai/flows/chatbot-flow';
 
 type Message = {
   role: 'user' | 'bot';
@@ -24,7 +24,7 @@ export function ChatbotWidget() {
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      setMessages([{ role: 'bot', text: "Hello! I'm the FileFortress assistant. How can I help you with encryption, passwords, or using the app today?" }]);
+      setMessages([{ role: 'bot', text: "Hello! I'm the FileFortress expert assistant. How can I help you today? You can ask me about the site, or even ask me to encrypt a piece of text for you." }]);
     }
   }, [isOpen, messages.length]);
 
@@ -47,7 +47,7 @@ export function ChatbotWidget() {
     setIsLoading(true);
 
     try {
-      const response: EncryptionFAQOutput = await encryptionFAQChatbot({ message: input });
+      const response: ChatbotOutput = await chatbot({ message: input });
       const botMessage: Message = { role: 'bot', text: response.response };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
@@ -84,7 +84,7 @@ export function ChatbotWidget() {
                 <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? "justify-end" : "justify-start")}>
                   {message.role === 'bot' && <Bot className="w-6 h-6 text-primary flex-shrink-0" />}
                   <div className={cn("p-3 rounded-lg max-w-[80%]", message.role === 'user' ? "bg-primary text-primary-foreground" : "bg-muted")}>
-                    <p className="text-sm">{message.text}</p>
+                    <p className="text-sm break-words">{message.text}</p>
                   </div>
                    {message.role === 'user' && <User className="w-6 h-6 text-muted-foreground flex-shrink-0" />}
                 </div>

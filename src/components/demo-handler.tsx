@@ -22,10 +22,6 @@ export function DemoHandler() {
   const handleGenerateKey = () => {
     const newKey = generateSecurityKey();
     setSecurityKey(newKey);
-    toast({
-      title: "Security Key Generated",
-      description: "A new security key has been generated for the demo.",
-    });
   };
 
   const handleCopyKey = (text: string, name: string) => {
@@ -48,7 +44,6 @@ export function DemoHandler() {
     try {
       const result = await encryptText(originalText, password, securityKey);
       setEncryptedText(result);
-      toast({ title: "Encryption Successful" });
     } catch (error) {
       toast({ variant: "destructive", title: "Encryption Failed", description: "An error occurred during encryption." });
     } finally {
@@ -69,7 +64,6 @@ export function DemoHandler() {
     try {
       const result = await decryptText(encryptedText, password, securityKey);
       setDecryptedText(result);
-      toast({ title: "Decryption Successful" });
     } catch (error) {
       toast({ variant: "destructive", title: "Decryption Failed", description: "Check your password/key or re-encrypt the text." });
     } finally {

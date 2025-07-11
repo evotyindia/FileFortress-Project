@@ -25,6 +25,14 @@ interface EncryptedResult {
   securityKey: string;
 }
 
+const passwordConditions = [
+    { label: "8+ characters", regex: /.{8,}/ },
+    { label: "1 uppercase", regex: /[A-Z]/ },
+    { label: "1 lowercase", regex: /[a-z]/ },
+    { label: "1 number", regex: /[0-9]/ },
+    { label: "1 special", regex: /[^A-Za-z0-9]/ },
+];
+
 export function FileHandler({ mode }: FileHandlerProps) {
   const [file, setFile] = useState<File | null>(null);
   const [password, setPassword] = useState("");
@@ -70,7 +78,6 @@ export function FileHandler({ mode }: FileHandlerProps) {
       const lines = content.split('\n');
       if (lines.length >= 3 && lines[2].trim()) {
         setSecurityKey(lines[2].trim());
-        toast({ title: 'Security key imported successfully.' });
       } else {
         toast({ variant: 'destructive', title: 'Invalid Key File', description: 'Could not find a valid security key in the uploaded file.' });
       }
@@ -92,7 +99,6 @@ export function FileHandler({ mode }: FileHandlerProps) {
     try {
         const result = await generateFilename({ originalFilename: file.name });
         setFilename(result.newFilename);
-        toast({ title: "Filename randomized!"});
     } catch (error) {
         console.error("Error generating filename: ", error);
         toast({ variant: "destructive", title: "Could not generate name", description: "The AI service might be busy. Please try again." });
@@ -159,13 +165,25 @@ export function FileHandler({ mode }: FileHandlerProps) {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!file || !password || (mode === 'encrypt' && !securityKey)) {
+    if (!file || !password) {
       toast({
         variant: "destructive",
         title: "Missing Information",
         description: "Please provide a file and password.",
       });
       return;
+    }
+
+    if (mode === 'encrypt') {
+        const isPasswordValid = passwordConditions.every(cond => cond.regex.test(password));
+        if (!isPasswordValid) {
+            toast({
+                variant: "destructive",
+                title: "Weak Password",
+                description: "Password must meet all conditions.",
+            });
+            return;
+        }
     }
 
     if (mode === 'decrypt' && !securityKey) {
@@ -192,17 +210,9 @@ export function FileHandler({ mode }: FileHandlerProps) {
         const encryptedFilename = `${filename}.fortress`;
         const { blob } = await encryptFile(file, password, securityKey);
         setEncryptedResult({ blob, filename: encryptedFilename, securityKey });
-        toast({
-          title: "Encryption Successful",
-          description: "Your file has been securely encrypted.",
-        });
       } else {
         const { blob, metadata } = await decryptFile(file, password, securityKey);
         downloadBlob(blob, metadata.name);
-        toast({
-          title: "Decryption Successful",
-          description: "Your file has been successfully decrypted and downloaded.",
-        });
         resetForm();
       }
     } catch (error) {
@@ -374,6 +384,16 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 required
                 className="h-12 text-lg"
               />
+               {mode === 'encrypt' && password.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
+                    {passwordConditions.map(condition => (
+                        <div key={condition.label} className={cn("flex items-center text-sm", condition.regex.test(password) ? "text-green-600" : "text-muted-foreground")}>
+                            {condition.regex.test(password) ? <ShieldCheck className="w-4 h-4 mr-2" /> : <div className="w-4 h-4 mr-2" />}
+                            {condition.label}
+                        </div>
+                    ))}
+                </div>
+              )}
             </div>
             {mode === 'encrypt' ? (
                 <div className="space-y-2">

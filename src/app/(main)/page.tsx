@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Lock, Unlock, ArrowRight, ShieldCheck } from "lucide-react";
+import { Lock, Unlock, ArrowRight, ShieldCheck, Wallet, Atom } from "lucide-react";
 import { ChatbotWidget } from "@/components/chatbot-widget";
 import Image from "next/image";
 
@@ -46,7 +46,7 @@ export default function DashboardPage() {
             <Card className="hover:border-primary/50 transition-colors">
               <CardHeader className="flex-row items-center gap-4">
                  <div className="bg-primary/10 p-3 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0-2 2c0 1.05.5 2 2 2h2v-4h-2z"/></svg>
+                    <Wallet className="w-8 h-8 text-primary" />
                  </div>
                 <CardTitle className="font-headline">Complete Privacy</CardTitle>
               </CardHeader>
@@ -59,7 +59,7 @@ export default function DashboardPage() {
             <Card className="hover:border-primary/50 transition-colors">
               <CardHeader className="flex-row items-center gap-4">
                  <div className="bg-primary/10 p-3 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M10 10-2.5 2.5"/><path d="m14 6 7.5-7.5"/><path d="M18 12h5"/><path d="M6 12H1"/><path d="M12 18v5"/><path d="M12 6V1"/><circle cx="12" cy="12" r="4"/></svg>
+                    <Atom className="w-8 h-8 text-primary" />
                  </div>
                 <CardTitle className="font-headline">Open & Transparent</CardTitle>
               </CardHeader>

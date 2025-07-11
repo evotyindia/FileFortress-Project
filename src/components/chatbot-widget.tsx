@@ -4,7 +4,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Loader2, Copy, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { chatbot } from '@/ai/flows/chatbot-flow';
@@ -49,7 +49,7 @@ const EncryptedMessage = ({ text }: { text: string }) => {
               <span className="font-semibold">Security Key</span>
               <Button variant="outline" size="sm" onClick={() => handleCopy(securityKey, 'Security Key')} className="h-7">
                 <Copy className="h-3 w-3 mr-2" />
-                Copy
+                Copy Key
               </Button>
             </div>
             <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider break-all">{securityKey}</p>
@@ -223,7 +223,7 @@ export function ChatbotWidget() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask a question..."
                 disabled={isLoading}
-                autoComplete="new-password"
+                autoComplete="off"
               />
               <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
                 <Send className="h-4 w-4" />

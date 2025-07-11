@@ -2,15 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Lock, Unlock, ScanLine, MoreHorizontal, Info, LifeBuoy } from "lucide-react";
+import { Home, Lock, Unlock, ScanLine, MoreHorizontal, Info, LifeBuoy, X, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet";
+import { ThemeToggle } from "../theme-toggle";
+
 
 const mainNavLinks = [
   { href: "/", label: "Home", icon: Home },
@@ -49,26 +46,45 @@ export function MobileBottomNav() {
         );
       })}
       
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+      <Sheet>
+        <SheetTrigger asChild>
           <Button variant="ghost" className="flex flex-col items-center justify-center w-full h-full text-sm font-medium text-muted-foreground hover:text-primary hover:bg-transparent">
              <div className="p-2 rounded-full">
                 <MoreHorizontal className="w-6 h-6" />
             </div>
             <span className="text-xs mt-0.5">More</span>
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" side="top" className="mb-2 w-48">
-           {moreNavLinks.map(link => (
-            <DropdownMenuItem key={link.href} asChild className="p-3 text-base">
-                <Link href={link.href} className="flex items-center gap-3">
-                    <link.icon className="w-5 h-5" />
-                    <span>{link.label}</span>
-                </Link>
-            </DropdownMenuItem>
-           ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </SheetTrigger>
+        <SheetContent side="bottom" className="rounded-t-2xl p-0 border-t">
+            <div className="relative p-6">
+                <SheetHeader className="text-left">
+                    <SheetTitle className="font-headline text-2xl">More Options</SheetTitle>
+                    <SheetDescription>
+                        Additional pages and settings.
+                    </SheetDescription>
+                </SheetHeader>
+
+                <div className="absolute top-4 right-4 flex items-center gap-2">
+                    <ThemeToggle />
+                    <SheetClose className="relative rounded-full p-2 text-muted-foreground hover:bg-muted">
+                        <X className="h-5 w-5" />
+                        <span className="sr-only">Close</span>
+                    </SheetClose>
+                </div>
+
+                <div className="mt-8 space-y-2">
+                    {moreNavLinks.map(link => (
+                      <SheetClose asChild key={link.href}>
+                        <Link href={link.href} className="flex items-center gap-4 p-3 -mx-3 rounded-lg text-lg font-medium hover:bg-muted active:bg-muted">
+                            <link.icon className="w-6 h-6 text-muted-foreground" />
+                            <span>{link.label}</span>
+                        </Link>
+                      </SheetClose>
+                    ))}
+                </div>
+            </div>
+        </SheetContent>
+      </Sheet>
     </nav>
   );
 }

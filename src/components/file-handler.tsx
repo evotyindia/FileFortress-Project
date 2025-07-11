@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { encryptFile, decryptFile, generateSecurityKey } from "@/lib/crypto";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw } from "lucide-react";
+import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw, FileKey } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Mode = "encrypt" | "decrypt";
@@ -31,6 +31,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [encryptedResult, setEncryptedResult] = useState<EncryptedResult | null>(null);
+  const keyFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -44,6 +45,38 @@ export function FileHandler({ mode }: FileHandlerProps) {
       setFile(files[0]);
     }
   };
+
+  const handleKeyFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const keyFile = event.target.files?.[0];
+    if (!keyFile) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      if (!content) {
+        toast({ variant: 'destructive', title: 'Error reading file', description: 'Could not read the key file.' });
+        return;
+      }
+      // The key is expected on the 3rd line of the file.
+      const lines = content.split('\n');
+      if (lines.length >= 3 && lines[2].trim()) {
+        setSecurityKey(lines[2].trim());
+        toast({ title: 'Security key imported successfully.' });
+      } else {
+        toast({ variant: 'destructive', title: 'Invalid Key File', description: 'Could not find a valid security key in the uploaded file.' });
+      }
+    };
+    reader.onerror = () => {
+        toast({ variant: 'destructive', title: 'File Read Error', description: 'An error occurred while reading the key file.' });
+    };
+    reader.readAsText(keyFile);
+
+    // Reset the input so the same file can be uploaded again
+    if (keyFileInputRef.current) {
+        keyFileInputRef.current.value = '';
+    }
+  };
+
 
   const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -302,15 +335,27 @@ export function FileHandler({ mode }: FileHandlerProps) {
             ) : (
                  <div className="space-y-2">
                     <Label htmlFor="security-key-decrypt" className="text-lg">Security Key</Label>
-                    <Input
-                        id="security-key-decrypt"
-                        type="text"
-                        placeholder="Enter the security key for your file"
-                        value={securityKey}
-                        onChange={(e) => setSecurityKey(e.target.value)}
-                        required
-                        className="h-12 text-lg"
-                    />
+                    <div className="flex flex-col sm:flex-row gap-2">
+                        <Input
+                            id="security-key-decrypt"
+                            type="text"
+                            placeholder="Enter or upload the security key"
+                            value={securityKey}
+                            onChange={(e) => setSecurityKey(e.target.value)}
+                            required
+                            className="h-12 text-lg"
+                        />
+                        <input
+                            type="file"
+                            accept=".txt"
+                            ref={keyFileInputRef}
+                            onChange={handleKeyFileChange}
+                            className="hidden"
+                        />
+                        <Button type="button" variant="secondary" className="h-12 text-base px-4" onClick={() => keyFileInputRef.current?.click()}>
+                           <FileKey className="mr-2 h-5 w-5"/> Upload Key File
+                        </Button>
+                    </div>
                 </div>
             )}
           </div>

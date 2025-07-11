@@ -5,17 +5,17 @@ import { usePathname } from "next/navigation"
 import { Logo } from "@/components/icons"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
-import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
+import { Menu, X, LayoutDashboard, Lock, Unlock, FlaskConical, Info, LifeBuoy } from "lucide-react"
 
 const navLinks = [
-  { href: "/", label: "Dashboard" },
-  { href: "/encrypt", label: "Encrypt" },
-  { href: "/decrypt", label: "Decrypt" },
-  { href: "/demo", label: "Demo" },
-  { href: "/about", label: "About" },
-  { href: "/support", label: "Support" },
+  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/encrypt", label: "Encrypt", icon: Lock },
+  { href: "/decrypt", label: "Decrypt", icon: Unlock },
+  { href: "/demo", label: "Demo", icon: FlaskConical },
+  { href: "/about", label: "About", icon: Info },
+  { href: "/support", label: "Support", icon: LifeBuoy },
 ];
 
 export function Navbar() {
@@ -57,12 +57,9 @@ export function Navbar() {
                             <span className="sr-only">Open Menu</span>
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="right" className="w-[280px]">
-                        <SheetHeader className="sr-only">
-                          <SheetTitle>Menu</SheetTitle>
-                        </SheetHeader>
+                    <SheetContent side="right" className="w-[280px] p-0">
                         <div className="flex flex-col h-full">
-                           <div className="flex justify-between items-center border-b pb-4 mb-4">
+                           <div className="flex justify-between items-center p-4 border-b">
                                 <Link href="/" className="flex items-center space-x-2">
                                     <Logo className="h-6 w-6 text-primary" />
                                     <span className="font-bold font-headline">FileFortress</span>
@@ -75,21 +72,30 @@ export function Navbar() {
                                 </SheetClose>
                             </div>
                            
-                            <nav className="flex flex-col gap-4 flex-1">
-                                {navLinks.map(link => (
+                            <nav className="flex flex-col gap-1 flex-1 p-4">
+                                {navLinks.map(link => {
+                                  const isActive = pathname === link.href;
+                                  return (
                                     <SheetClose asChild key={link.href}>
                                         <Link
                                             href={link.href}
                                             className={cn(
-                                            "text-lg transition-colors hover:text-primary",
-                                            pathname === link.href ? "text-primary font-semibold" : "text-muted-foreground"
+                                            "flex items-center gap-3 rounded-md px-3 py-2 text-base font-medium transition-colors",
+                                            isActive 
+                                              ? "bg-primary/10 text-primary" 
+                                              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                                             )}
                                         >
+                                            <link.icon className="h-5 w-5" />
                                             {link.label}
                                         </Link>
                                     </SheetClose>
-                                ))}
+                                  )
+                                })}
                             </nav>
+                            <div className="p-4 mt-auto border-t">
+                              <ThemeToggle />
+                            </div>
                         </div>
                     </SheetContent>
                 </Sheet>

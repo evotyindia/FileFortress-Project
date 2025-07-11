@@ -17,8 +17,6 @@ type Message = {
   text: string;
 };
 
-const CHAT_MESSAGES_KEY = 'chatMessages';
-
 const EncryptedMessage = ({ text }: { text: string }) => {
     const { toast } = useToast();
     const encryptedText = text.match(/ENCRYPTED_MESSAGE\[(.*)\]/)?.[1];
@@ -52,45 +50,23 @@ const EncryptedMessage = ({ text }: { text: string }) => {
 
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    { role: 'bot', text: "Hello! I'm Cypher, the FileFortress expert assistant. How can I help you today? You can ask me about the site, or even ask me to encrypt a piece of text for you." }
+  ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Load messages from sessionStorage on initial render
-  useEffect(() => {
-    try {
-      const storedMessages = sessionStorage.getItem(CHAT_MESSAGES_KEY);
-      if (storedMessages) {
-        setMessages(JSON.parse(storedMessages));
-      } else {
-        setMessages([{ role: 'bot', text: "Hello! I'm the FileFortress expert assistant. How can I help you today? You can ask me about the site, or even ask me to encrypt a piece of text for you." }]);
-      }
-    } catch (error) {
-       setMessages([{ role: 'bot', text: "Hello! I'm the FileFortress expert assistant. How can I help you today? You can ask me about the site, or even ask me to encrypt a piece of text for you." }]);
-    }
-  }, []);
-
-
-  // Save messages to sessionStorage whenever they change
-  useEffect(() => {
-    try {
-        sessionStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify(messages));
-    } catch (error) {
-        console.error("Could not save chat messages to session storage.", error);
-    }
-  }, [messages]);
-
   // Scroll to bottom when new messages are added
   useEffect(() => {
-    if (scrollAreaRef.current) {
+    if (isOpen && scrollAreaRef.current) {
         const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
         if (viewport) {
             viewport.scrollTop = viewport.scrollHeight;
         }
     }
-  }, [messages]);
+  }, [messages, isOpen]);
 
   // Handle clicks outside the chatbot
   useEffect(() => {
@@ -143,10 +119,10 @@ export function ChatbotWidget() {
       </div>
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-opacity duration-300 ease-in-out", !isOpen ? "opacity-0 pointer-events-none" : "opacity-100")}>
-        <Card ref={cardRef} className="w-[350px] h-[500px] flex flex-col shadow-2xl">
+        <Card ref={cardRef} className="w-[350px] flex flex-col shadow-2xl max-h-[calc(100vh-6rem)]">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="font-headline flex items-center gap-2">
-              <Bot className="text-primary"/> AI Assistant
+              <Bot className="text-primary"/> Cypher
             </CardTitle>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
               <X className="h-4 w-4" />

@@ -90,6 +90,7 @@ export function ChatbotWidget() {
   const [isClient, setIsClient] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -123,6 +124,28 @@ export function ChatbotWidget() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
+
+  // Scroll input into view on mobile when keyboard opens
+  useEffect(() => {
+    const inputElement = inputRef.current;
+    if (!inputElement) return;
+
+    const handleFocus = () => {
+        // Check for mobile user agent
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            setTimeout(() => {
+                inputElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 300); // Delay to allow keyboard to animate in
+        }
+    };
+    
+    inputElement.addEventListener('focus', handleFocus);
+
+    return () => {
+        inputElement.removeEventListener('focus', handleFocus);
+    };
+  }, [isClient, isOpen]);
+
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -197,6 +220,7 @@ export function ChatbotWidget() {
           <CardFooter>
             <form onSubmit={handleSendMessage} className="flex w-full items-center space-x-2">
               <Input
+                ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask a question..."

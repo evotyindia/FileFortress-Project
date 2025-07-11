@@ -342,18 +342,18 @@ export function FileHandler({ mode }: FileHandlerProps) {
               <div className="space-y-2">
                 <Label htmlFor="filename" className="text-lg">Encrypted Filename</Label>
                 <div className="flex items-center gap-2">
-                  <div className="relative flex-grow">
-                    <Input
-                      id="filename"
-                      type="text"
-                      placeholder="Enter a filename"
-                      value={filename}
-                      onChange={(e) => setFilename(e.target.value)}
-                      required
-                      className="h-12 text-lg pr-12"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">.fortress</span>
-                  </div>
+                    <div className="flex h-12 w-full rounded-md border border-input bg-background text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                        <Input
+                            id="filename"
+                            type="text"
+                            placeholder="Enter a filename"
+                            value={filename}
+                            onChange={(e) => setFilename(e.target.value)}
+                            required
+                            className="h-auto text-lg border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 flex-1"
+                        />
+                        <span className="flex items-center px-3 text-muted-foreground bg-transparent">.fortress</span>
+                    </div>
                   <Button type="button" variant="secondary" onClick={handleRandomizeName} disabled={!file || isGeneratingName} className="h-12">
                     {isGeneratingName ? <Loader2 className="animate-spin" /> : <Wand2 className="mr-2 h-5 w-5"/>}
                     Randomize
@@ -403,9 +403,9 @@ export function FileHandler({ mode }: FileHandlerProps) {
                             required
                             className="h-12 text-lg"
                         />
-                         <div className="flex items-center justify-center gap-2">
+                         <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground font-semibold">
                             <hr className="w-full border-border sm:hidden" />
-                            <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">OR</span>
+                            <span className="whitespace-nowrap">OR</span>
                              <hr className="w-full border-border sm:hidden" />
                         </div>
                         <input

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { encryptFile, decryptFile, generateSecurityKey } from "@/lib/crypto";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, ArrowLeft, RefreshCw } from "lucide-react";
+import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Mode = "encrypt" | "decrypt";
@@ -32,6 +32,12 @@ export function FileHandler({ mode }: FileHandlerProps) {
   const [encryptedResult, setEncryptedResult] = useState<EncryptedResult | null>(null);
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (mode === 'encrypt' && file) {
+      setSecurityKey(generateSecurityKey());
+    }
+  }, [file, mode]);
+
   const handleFileChange = (files: FileList | null) => {
     if (files && files.length > 0) {
       setFile(files[0]);
@@ -43,7 +49,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
     event.stopPropagation();
     setIsDragOver(false);
     if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
-      setFile(event.dataTransfer.files[0]);
+      handleFileChange(event.dataTransfer.files);
       event.dataTransfer.clearData();
     }
   }, []);
@@ -60,17 +66,8 @@ export function FileHandler({ mode }: FileHandlerProps) {
     setIsDragOver(false);
   };
 
-  const handleGenerateKey = () => {
-    const newKey = generateSecurityKey();
-    setSecurityKey(newKey);
-    toast({
-      title: "Security Key Generated",
-      description: "A new security key has been generated and filled in.",
-    });
-  };
-
-  const handleCopyKey = () => {
-    navigator.clipboard.writeText(securityKey);
+  const handleCopyKey = (key: string) => {
+    navigator.clipboard.writeText(key);
     toast({ title: "Security key copied to clipboard." });
   };
 
@@ -103,13 +100,22 @@ export function FileHandler({ mode }: FileHandlerProps) {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!file || !password || !securityKey) {
+    if (!file || !password || (mode === 'encrypt' && !securityKey)) {
       toast({
         variant: "destructive",
         title: "Missing Information",
-        description: "Please provide a file, password, and security key.",
+        description: "Please provide a file and password.",
       });
       return;
+    }
+
+    if (mode === 'decrypt' && !securityKey) {
+        toast({
+            variant: "destructive",
+            title: "Missing Information",
+            description: "Please provide the security key for decryption.",
+        });
+        return;
     }
 
     setIsProcessing(true);
@@ -139,7 +145,6 @@ export function FileHandler({ mode }: FileHandlerProps) {
       });
       setIsProcessing(false);
     }
-    // No longer setting isProcessing to false for encryption here, it happens on reset
   };
 
   if (mode === 'encrypt' && encryptedResult) {
@@ -155,6 +160,35 @@ export function FileHandler({ mode }: FileHandlerProps) {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
+            <div className="space-y-2">
+                <Label htmlFor="generated-key" className="text-lg">Your New Security Key</Label>
+                <div className="flex items-center gap-2">
+                    <Input
+                        id="generated-key"
+                        type="text"
+                        readOnly
+                        value={encryptedResult.securityKey}
+                        className="h-12 text-base font-code truncate"
+                        placeholder="Your generated security key"
+                    />
+                    <Button type="button" variant="outline" onClick={() => handleCopyKey(encryptedResult.securityKey)} size="icon" className="h-12 w-12 flex-shrink-0">
+                        <Copy className="w-5 h-5" />
+                        <span className="sr-only">Copy Key</span>
+                    </Button>
+                </div>
+            </div>
+
+            <Alert variant="destructive" className="text-base p-5">
+                <div className="flex items-center gap-3">
+                    <AlertTriangle className="h-6 w-6" />
+                    <AlertTitle className="font-headline text-lg m-0">Crucial: Save Your Keys!</AlertTitle>
+                </div>
+                <AlertDescription className="mt-3 pl-9">
+                    You MUST save both your password and the security key.
+                    <strong> Losing either will result in permanent data loss.</strong>
+                </AlertDescription>
+            </Alert>
+            
             <div className="grid sm:grid-cols-2 gap-6">
                  <Button
                     size="lg"
@@ -175,15 +209,6 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 </Button>
             </div>
           
-            <Alert variant="destructive" className="mt-6 text-base p-5">
-                <AlertTriangle className="h-5 w-5" />
-                <AlertTitle className="font-headline text-lg">Crucial: Save Your Keys!</AlertTitle>
-                <AlertDescription className="mt-2">
-                You MUST save both your password and the security key file.
-                <strong> Losing either will result in permanent data loss.</strong>
-                </AlertDescription>
-            </Alert>
-            
             <div className="text-center">
                 <Button variant="link" size="lg" className="text-lg" onClick={resetForm}>
                     <RefreshCw className="mr-2 h-5 w-5" />
@@ -222,13 +247,14 @@ export function FileHandler({ mode }: FileHandlerProps) {
               type="file" 
               className="hidden"
               onChange={(e) => handleFileChange(e.target.files)}
+              disabled={isProcessing}
             />
             {file ? (
               <div className="flex flex-col items-center gap-2 text-foreground">
                 <File className="w-16 h-16 text-primary"/>
                 <span className="font-medium text-lg mt-2">{file.name}</span>
                 <span className="text-base text-muted-foreground">{Math.round(file.size / 1024)} KB</span>
-                <Button variant="link" size="sm" onClick={(e) => { e.stopPropagation(); resetForm(); }}>
+                <Button variant="link" size="sm" onClick={(e) => { e.stopPropagation(); setFile(null); setSecurityKey(''); }}>
                   Remove file
                 </Button>
               </div>
@@ -251,43 +277,55 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="h-12 text-base"
+                className="h-12 text-lg"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="security-key" className="text-lg">Security Key</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="security-key"
-                  type="text"
-                  placeholder="Enter or generate a security key"
-                  value={securityKey}
-                  onChange={(e) => setSecurityKey(e.target.value)}
-                  required
-                  className="h-12 text-base"
-                />
-                 <Button type="button" variant="outline" onClick={handleCopyKey} size="icon" className="h-12 w-12" disabled={!securityKey}>
-                  <Copy className="w-5 h-5" />
-                  <span className="sr-only">Copy Key</span>
-                </Button>
-                {mode === 'encrypt' && (
-                  <Button type="button" variant="secondary" onClick={handleGenerateKey} className="h-12 text-base px-4">
-                    <Key className="w-5 h-5 mr-2" />
-                    Generate
-                  </Button>
-                )}
-              </div>
-            </div>
+            {mode === 'encrypt' ? (
+                <div className="space-y-2">
+                    <Label htmlFor="security-key" className="text-lg">Generated Security Key</Label>
+                    <div className="flex items-center gap-2">
+                        <Input
+                            id="security-key"
+                            type="text"
+                            readOnly
+                            placeholder="A key will be generated when you select a file"
+                            value={securityKey}
+                            className="h-12 text-lg font-code truncate bg-muted/50"
+                        />
+                         <Button type="button" variant="outline" onClick={() => handleCopyKey(securityKey)} size="icon" className="h-12 w-12 flex-shrink-0" disabled={!securityKey}>
+                            <Copy className="w-5 h-5" />
+                            <span className="sr-only">Copy Key</span>
+                        </Button>
+                    </div>
+                </div>
+            ) : (
+                 <div className="space-y-2">
+                    <Label htmlFor="security-key-decrypt" className="text-lg">Security Key</Label>
+                    <Input
+                        id="security-key-decrypt"
+                        type="text"
+                        placeholder="Enter the security key for your file"
+                        value={securityKey}
+                        onChange={(e) => setSecurityKey(e.target.value)}
+                        required
+                        className="h-12 text-lg"
+                    />
+                </div>
+            )}
           </div>
           
-          <Alert variant="destructive" className="mt-6 text-base p-5">
-            <AlertTriangle className="h-5 w-5" />
-            <AlertTitle className="font-headline text-lg">Important: Save Your Keys!</AlertTitle>
-            <AlertDescription className="mt-2">
-              Both your password AND the security key are required to unlock your files. FileFortress does <strong>NOT</strong> store these keys.
-              <br />
-              <strong>Lose them, and your files are gone forever.</strong> Please keep them safe and backed up!
-            </AlertDescription>
+          <Alert variant="destructive" className="text-base p-5">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-6 w-6 mt-1" />
+              <div className="flex-1">
+                <AlertTitle className="font-headline text-lg">Important: Save Your Keys!</AlertTitle>
+                <AlertDescription className="mt-2">
+                  Both your password AND the security key are required to unlock your files. FileFortress does <strong>NOT</strong> store these keys.
+                  <br />
+                  <strong>Lose them, and your files are gone forever.</strong> Please keep them safe and backed up!
+                </AlertDescription>
+              </div>
+            </div>
           </Alert>
           
           <Button type="submit" size="lg" className="w-full text-lg h-14" disabled={isProcessing || !file}>
@@ -298,8 +336,8 @@ export function FileHandler({ mode }: FileHandlerProps) {
               </>
             ) : (
               <>
-                <Download className="mr-2 h-5 w-5" />
-                <span className="capitalize">{mode}</span> & Download File
+                <ShieldCheck className="mr-2 h-5 w-5" />
+                <span className="capitalize">{mode}</span> File
               </>
             )}
           </Button>

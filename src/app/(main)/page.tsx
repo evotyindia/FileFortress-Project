@@ -28,16 +28,16 @@ export default function DashboardPage() {
 
         {/* Features Section */}
         <section className="mt-24">
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <Card className="hover:border-primary/50 transition-colors">
               <CardHeader className="flex-row items-center gap-4">
                  <div className="bg-primary/10 p-4 rounded-full">
                     <ShieldCheck className="w-8 h-8 text-primary"/>
                  </div>
-                 <CardTitle className="font-headline text-xl">Ultimate Security</CardTitle>
+                 <CardTitle className="font-headline text-2xl">Ultimate Security</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base">
+                <CardDescription className="text-lg">
                   Using the Web Crypto API with AES-GCM encryption, your files are secured with industry-standard algorithms before they ever leave your machine.
                 </CardDescription>
               </CardContent>
@@ -47,10 +47,10 @@ export default function DashboardPage() {
                  <div className="bg-primary/10 p-4 rounded-full">
                     <Wallet className="w-8 h-8 text-primary" />
                  </div>
-                <CardTitle className="font-headline text-xl">Complete Privacy</CardTitle>
+                <CardTitle className="font-headline text-2xl">Complete Privacy</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base">
+                <CardDescription className="text-lg">
                   We are a zero-knowledge service. We don't store your files, passwords, or keys. Your privacy is paramount and guaranteed.
                 </CardDescription>
               </CardContent>
@@ -60,10 +60,10 @@ export default function DashboardPage() {
                  <div className="bg-primary/10 p-4 rounded-full">
                     <Atom className="w-8 h-8 text-primary" />
                  </div>
-                <CardTitle className="font-headline text-xl">Open & Transparent</CardTitle>
+                <CardTitle className="font-headline text-2xl">Open & Transparent</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base">
+                <CardDescription className="text-lg">
                   FileFortress is built on open web standards. The entire process is transparent and can be verified. See how it works on our Demo page.
                 </CardDescription>
               </CardContent>

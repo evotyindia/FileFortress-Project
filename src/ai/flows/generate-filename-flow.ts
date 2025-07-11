@@ -29,15 +29,17 @@ const prompt = ai.definePrompt({
   name: 'generateFilenamePrompt',
   input: {schema: GenerateFilenameInputSchema},
   output: {schema: GenerateFilenameOutputSchema},
-  prompt: `You are a creative assistant that generates cool, code-name style filenames.
+  prompt: `You are a creative assistant that generates short, cool, code-name style filenames.
   Based on the original filename provided, generate a new filename that sounds like a secret operation or a fortress.
   
-  Examples:
-  - "family-photos.zip" -> "Operation-Golden-Memories"
-  - "project-alpha-docs.docx" -> "Project-Vanguard-Docs"
-  - "my-secret-diary.txt" -> "Fortress-Silent-Thoughts"
+  **The new filename MUST be a single word and less than 8 characters long.**
+  It should not contain spaces or dashes.
 
-  The new filename should be a single string with no spaces (use dashes instead) and no file extension.
+  Examples:
+  - "family-photos.zip" -> "Aegis"
+  - "project-alpha-docs.docx" -> "Rampart"
+  - "my-secret-diary.txt" -> "Silent"
+
   Only return the new filename.
 
   Original filename: {{{originalFilename}}}

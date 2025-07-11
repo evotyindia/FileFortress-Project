@@ -51,7 +51,7 @@ const EncryptedMessage = ({ text }: { text: string }) => {
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'bot', text: "Hello! I'm Cypher, the FileFortress expert assistant. How can I help you today? You can ask me about the site, or even ask me to encrypt a piece of text for you." }
+    { role: 'bot', text: "Hello! I'm Cipher, the FileFortress expert assistant. How can I help you today? You can ask me about the site, or even ask me to encrypt a piece of text for you." }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -122,7 +122,7 @@ export function ChatbotWidget() {
         <Card ref={cardRef} className="w-[350px] flex flex-col shadow-2xl max-h-[calc(100vh-6rem)]">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="font-headline flex items-center gap-2">
-              <Bot className="text-primary"/> Cypher
+              <Bot className="text-primary"/> Cipher
             </CardTitle>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
               <X className="h-4 w-4" />

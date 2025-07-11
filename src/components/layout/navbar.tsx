@@ -29,7 +29,7 @@ export function Navbar() {
           <span className="font-bold sm:inline-block font-headline">FileFortress</span>
         </Link>
         
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium">
           {navLinks.map(link => (
             <Link
               key={link.href}
@@ -42,29 +42,31 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-        </nav>
+        </div>
 
-        <div className="flex items-center md:ml-4">
+        <div className="flex items-center ml-auto md:ml-4">
             <div className="hidden md:block">
               <ThemeToggle />
             </div>
-            <div className="md:hidden ml-2">
+            <div className="md:hidden">
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                            <Menu className="h-6 w-6" />
+                        <Button variant="ghost" size="icon" className="h-10 w-10">
+                            <Menu className="h-8 w-8" />
                             <span className="sr-only">Open Menu</span>
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="right" className="w-[280px] p-0">
                         <div className="flex flex-col h-full">
-                           <SheetHeader className="p-4 border-b flex flex-row items-center justify-between">
+                           <SheetHeader className="p-4 border-b">
+                                <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                                <SheetClose asChild>
                                   <Link href="/" className="flex items-center space-x-2">
                                       <Logo className="h-6 w-6 text-primary" />
                                       <span className="font-bold font-headline">FileFortress</span>
                                   </Link>
-                                <SheetClose asChild>
-                                  <ThemeToggle />
                                 </SheetClose>
                            </SheetHeader>
                            
@@ -92,6 +94,7 @@ export function Navbar() {
                         </div>
                     </SheetContent>
                 </Sheet>
+              </div>
             </div>
         </div>
       </div>

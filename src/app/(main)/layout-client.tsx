@@ -3,7 +3,7 @@
 
 import { useEffect } from 'react';
 
-const SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+const SESSION_TIMEOUT = 10 * 60 * 1000; // 10 minutes
 const LAST_ACTIVE_KEY = 'lastActiveTime';
 
 export function MainLayoutClient({ children }: { children: React.ReactNode }) {
@@ -21,6 +21,8 @@ export function MainLayoutClient({ children }: { children: React.ReactNode }) {
         const timeSinceLastActive = Date.now() - parseInt(lastActiveTime, 10);
         if (timeSinceLastActive > SESSION_TIMEOUT) {
           sessionStorage.removeItem(LAST_ACTIVE_KEY);
+          // Clear chat history on session timeout
+          sessionStorage.removeItem('chatMessages');
           // Hard reload to clear all component state
           window.location.reload();
         }

@@ -98,6 +98,7 @@ export function DemoHandler() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="text-base"
+              autoComplete="off"
             />
           </div>
           <div className="space-y-2">
@@ -110,6 +111,7 @@ export function DemoHandler() {
                   value={securityKey}
                   onChange={(e) => setSecurityKey(e.target.value)}
                   className="text-base"
+                  autoComplete="off"
                 />
                 <Button type="button" variant="outline" onClick={() => handleCopyKey(securityKey, 'Security key')} size="icon" disabled={!securityKey}>
                     <Copy className="w-4 h-4" />

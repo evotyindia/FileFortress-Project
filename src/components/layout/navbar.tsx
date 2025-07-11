@@ -24,78 +24,75 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center px-4 md:px-8">
-        <Link href="/" className="mr-auto flex items-center space-x-2">
+        <Link href="/" className="flex items-center space-x-2">
           <Logo className="h-6 w-6 text-primary" />
           <span className="font-bold sm:inline-block font-headline">FileFortress</span>
         </Link>
         
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-          {navLinks.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "transition-colors hover:text-primary",
-                pathname === link.href ? "text-primary" : "text-muted-foreground"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
+        <div className="ml-auto flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "transition-colors hover:text-primary",
+                  pathname === link.href ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-        <div className="flex items-center ml-auto md:ml-4">
-            <div className="hidden md:block">
-              <ThemeToggle />
-            </div>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <div className="md:hidden">
-              <div className="flex items-center gap-2">
-                <ThemeToggle />
-                <Sheet>
-                    <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-10 w-10">
-                            <Menu className="h-8 w-8" />
-                            <span className="sr-only">Open Menu</span>
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-[280px] p-0">
-                        <div className="flex flex-col h-full">
-                           <SheetHeader className="p-4 border-b">
-                                <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
-                                <SheetClose asChild>
-                                  <Link href="/" className="flex items-center space-x-2">
-                                      <Logo className="h-6 w-6 text-primary" />
-                                      <span className="font-bold font-headline">FileFortress</span>
-                                  </Link>
-                                </SheetClose>
-                           </SheetHeader>
-                           
-                            <nav className="flex flex-col gap-1 flex-1 p-4">
-                                {navLinks.map(link => {
-                                  const isActive = pathname === link.href;
-                                  return (
-                                    <SheetClose asChild key={link.href}>
-                                        <Link
-                                            href={link.href}
-                                            className={cn(
-                                            "flex items-center gap-3 rounded-md px-3 py-2 text-base font-medium transition-colors",
-                                            isActive 
-                                              ? "bg-primary/10 text-primary" 
-                                              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                                            )}
-                                        >
-                                            <link.icon className="h-5 w-5" />
-                                            {link.label}
-                                        </Link>
-                                    </SheetClose>
-                                  )
-                                })}
-                            </nav>
-                        </div>
-                    </SheetContent>
-                </Sheet>
-              </div>
+              <Sheet>
+                  <SheetTrigger asChild>
+                      <Button variant="outline" size="icon" className="h-10 w-10">
+                          <Menu className="h-6 w-6" />
+                          <span className="sr-only">Open Menu</span>
+                      </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-[280px] p-0">
+                      <div className="flex flex-col h-full">
+                         <SheetHeader className="p-4 border-b">
+                            <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                            <SheetClose asChild>
+                              <Link href="/" className="flex items-center space-x-2">
+                                  <Logo className="h-6 w-6 text-primary" />
+                                  <span className="font-bold font-headline">FileFortress</span>
+                              </Link>
+                            </SheetClose>
+                         </SheetHeader>
+                         
+                          <nav className="flex flex-col gap-1 flex-1 p-4">
+                              {navLinks.map(link => {
+                                const isActive = pathname === link.href;
+                                return (
+                                  <SheetClose asChild key={link.href}>
+                                      <Link
+                                          href={link.href}
+                                          className={cn(
+                                          "flex items-center gap-3 rounded-md px-3 py-2 text-base font-medium transition-colors",
+                                          isActive 
+                                            ? "bg-primary/10 text-primary" 
+                                            : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                                          )}
+                                      >
+                                          <link.icon className="h-5 w-5" />
+                                          {link.label}
+                                      </Link>
+                                  </SheetClose>
+                                )
+                              })}
+                          </nav>
+                      </div>
+                  </SheetContent>
+              </Sheet>
             </div>
+          </div>
         </div>
       </div>
     </header>

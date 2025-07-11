@@ -38,7 +38,11 @@ const EncryptedMessage = ({ text }: { text: string }) => {
     if (!encryptedText) {
       return (
         <div className="prose prose-sm dark:prose-invert break-words max-w-none">
-           <ReactMarkdown>{text}</ReactMarkdown>
+           <ReactMarkdown
+             components={{
+                strong: ({node, ...props}) => <strong className="text-primary" {...props} />,
+             }}
+           >{text}</ReactMarkdown>
         </div>
       );
     }
@@ -220,6 +224,7 @@ export function ChatbotWidget() {
                                     p: ({node, ...props}) => <p className="my-2" {...props} />,
                                     ul: ({node, ...props}) => <ul className="my-2" {...props} />,
                                     ol: ({node, ...props}) => <ol className="my-2" {...props} />,
+                                    strong: ({node, ...props}) => <strong className="text-primary" {...props} />,
                                   }}
                                 >{message.text}</ReactMarkdown>
                             </div>

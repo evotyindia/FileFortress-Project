@@ -21,7 +21,8 @@ type Message = {
 const EncryptedMessage = ({ text }: { text: string }) => {
     const { toast } = useToast();
     
-    const encryptedText = text.match(/ENCRYPTED_MESSAGE\[(.*)\]/)?.[1];
+    const encryptedTextMatch = text.match(/ENCRYPTED_MESSAGE\[(.*?)\]/);
+    const encryptedText = encryptedTextMatch ? encryptedTextMatch[1] : '';
   
     if (!encryptedText) {
       return <p className="text-sm break-words">{text}</p>;
@@ -39,7 +40,7 @@ const EncryptedMessage = ({ text }: { text: string }) => {
         {introText && <p>{introText}</p>}
         
         <div className="space-y-2">
-             <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center">
                 <span className="font-semibold">Encrypted Message</span>
                 <Button variant="outline" size="sm" onClick={() => handleCopy(encryptedText, 'Encrypted Message')} className="h-7">
                     <Copy className="h-3 w-3 mr-2" />
@@ -155,7 +156,7 @@ export function ChatbotWidget() {
       </div>
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-opacity duration-300 ease-in-out", !isOpen ? "opacity-0 pointer-events-none" : "opacity-100")}>
-        <Card ref={cardRef} className="w-[350px] flex flex-col shadow-2xl max-h-[calc(100vh-6rem)]">
+        <Card ref={cardRef} className="w-[350px] h-[500px] flex flex-col shadow-2xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="font-headline flex items-center gap-2">
               <Bot className="text-primary"/> Cipher

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw, FileKey, Wand2 } from "lucide-react";
+import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw, FileKey, Wand2, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { generateFilename } from "@/ai/flows/generate-filename-flow";
 
@@ -36,6 +36,8 @@ const passwordConditions = [
 export function FileHandler({ mode }: FileHandlerProps) {
   const [file, setFile] = useState<File | null>(null);
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [securityKey, setSecurityKey] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -157,6 +159,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
   const resetForm = () => {
     setFile(null);
     setPassword("");
+    setConfirmPassword("");
     setSecurityKey("");
     setEncryptedResult(null);
     setIsProcessing(false);
@@ -181,6 +184,14 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 variant: "destructive",
                 title: "Weak Password",
                 description: "Password must meet all conditions.",
+            });
+            return;
+        }
+        if (password !== confirmPassword) {
+            toast({
+                variant: "destructive",
+                title: "Passwords do not match",
+                description: "Please ensure your passwords match.",
             });
             return;
         }
@@ -366,7 +377,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                       <span className="flex items-center px-3 text-muted-foreground bg-transparent">.fortress</span>
                   </div>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-center">
                     <Button type="button" variant="secondary" onClick={handleRandomizeName} disabled={!file || isGeneratingName}>
                         {isGeneratingName ? <Loader2 className="animate-spin" /> : <Wand2 className="mr-2 h-5 w-5"/>}
                         Randomize
@@ -376,15 +387,21 @@ export function FileHandler({ mode }: FileHandlerProps) {
             )}
             <div className="space-y-2">
               <Label htmlFor="password" className="text-lg">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter a strong password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="h-12 text-lg"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter a strong password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="h-12 text-lg pr-12"
+                />
+                <Button type="button" variant="ghost" size="icon" className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 text-muted-foreground" onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  <span className="sr-only">Toggle password visibility</span>
+                </Button>
+              </div>
                {mode === 'encrypt' && password.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
                     {passwordConditions.map(condition => (
@@ -396,6 +413,28 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 </div>
               )}
             </div>
+            
+            {mode === 'encrypt' && (
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password" className="text-lg">Confirm Password</Label>
+                <div className="relative">
+                  <Input
+                    id="confirm-password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    className="h-12 text-lg pr-12"
+                  />
+                  <Button type="button" variant="ghost" size="icon" className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 text-muted-foreground" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    <span className="sr-only">Toggle password visibility</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+            
             {mode === 'encrypt' ? (
                 <div className="space-y-2">
                     <Label htmlFor="security-key" className="text-lg">Generated Security Key</Label>

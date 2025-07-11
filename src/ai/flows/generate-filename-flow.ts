@@ -12,7 +12,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateFilenameInputSchema = z.object({
-  originalFilename: z.string().describe('The original filename to base the new name on.'),
+  originalFilename: z.string().describe('The original filename to base the new name on, including its extension.'),
 });
 export type GenerateFilenameInput = z.infer<typeof GenerateFilenameInputSchema>;
 
@@ -29,16 +29,17 @@ const prompt = ai.definePrompt({
   name: 'generateFilenamePrompt',
   input: {schema: GenerateFilenameInputSchema},
   output: {schema: GenerateFilenameOutputSchema},
-  prompt: `You are a creative assistant that generates short, cool, code-name style filenames.
-  Based on the original filename provided, generate a new filename that sounds like a secret operation or a fortress.
+  prompt: `You are a creative naming assistant for a secure application called FileFortress. Your task is to generate cool, code-name style filenames.
+  Based on the original filename and its extension, generate a new filename that sounds like a secret operation, a fortress, or a classified project.
   
-  **The new filename MUST be a single word and less than 25 characters long.**
-  It should not contain spaces or dashes.
+  **The new filename MUST be a single word, between 20 and 25 characters long.**
+  It should not contain spaces, dashes, or any special characters.
 
   Examples:
-  - "family-photos.zip" -> "Aegis"
-  - "project-alpha-docs.docx" -> "Rampart"
-  - "my-secret-diary.txt" -> "Silent"
+  - "family-photos.zip" -> "WhisperingAegisArchive"
+  - "project-alpha-docs.docx" -> "ProjectRampartDocument"
+  - "my-secret-diary.txt" -> "SilentScriptChronicle"
+  - "budget.xlsx" -> "FinancialGuardianLedger"
 
   Only return the new filename.
 

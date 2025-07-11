@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw, FileKey } from "lucide-react";
+import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw, FileKey, Wand2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { generateFilename } from "@/ai/flows/generate-filename-flow";
 
 type Mode = "encrypt" | "decrypt";
 
@@ -31,12 +32,20 @@ export function FileHandler({ mode }: FileHandlerProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [encryptedResult, setEncryptedResult] = useState<EncryptedResult | null>(null);
+  const [filename, setFilename] = useState("");
+  const [isGeneratingName, setIsGeneratingName] = useState(false);
   const keyFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (mode === 'encrypt' && file) {
-      setSecurityKey(generateSecurityKey());
+    if (file) {
+      if (mode === 'encrypt') {
+        setSecurityKey(generateSecurityKey());
+      }
+      const baseName = file.name.split('.').slice(0, -1).join('.');
+      setFilename(baseName || file.name);
+    } else {
+      setFilename("");
     }
   }, [file, mode]);
 
@@ -76,6 +85,21 @@ export function FileHandler({ mode }: FileHandlerProps) {
         keyFileInputRef.current.value = '';
     }
   };
+
+  const handleRandomizeName = async () => {
+    if (!file) return;
+    setIsGeneratingName(true);
+    try {
+        const result = await generateFilename({ originalFilename: file.name });
+        setFilename(result.newFilename);
+        toast({ title: "Filename randomized!"});
+    } catch (error) {
+        console.error("Error generating filename: ", error);
+        toast({ variant: "destructive", title: "Could not generate name", description: "The AI service might be busy. Please try again." });
+    } finally {
+        setIsGeneratingName(false);
+    }
+  }
 
 
   const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -130,6 +154,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
     setSecurityKey("");
     setEncryptedResult(null);
     setIsProcessing(false);
+    setFilename("");
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -151,12 +176,22 @@ export function FileHandler({ mode }: FileHandlerProps) {
         });
         return;
     }
+    
+    if (mode === 'encrypt' && !filename) {
+        toast({
+            variant: "destructive",
+            title: "Missing Filename",
+            description: "Please provide a name for the encrypted file.",
+        });
+        return;
+    }
 
     setIsProcessing(true);
     try {
       if (mode === 'encrypt') {
-        const { blob, filename } = await encryptFile(file, password, securityKey);
-        setEncryptedResult({ blob, filename, securityKey });
+        const encryptedFilename = `${filename}.fortress`;
+        const { blob } = await encryptFile(file, password, securityKey);
+        setEncryptedResult({ blob, filename: encryptedFilename, securityKey });
         toast({
           title: "Encryption Successful",
           description: "Your file has been securely encrypted.",
@@ -303,6 +338,29 @@ export function FileHandler({ mode }: FileHandlerProps) {
           </div>
 
           <div className="space-y-6">
+             {mode === 'encrypt' && (
+              <div className="space-y-2">
+                <Label htmlFor="filename" className="text-lg">Encrypted Filename</Label>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-grow">
+                    <Input
+                      id="filename"
+                      type="text"
+                      placeholder="Enter a filename"
+                      value={filename}
+                      onChange={(e) => setFilename(e.target.value)}
+                      required
+                      className="h-12 text-lg pr-12"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">.fortress</span>
+                  </div>
+                  <Button type="button" variant="secondary" onClick={handleRandomizeName} disabled={!file || isGeneratingName} className="h-12">
+                    {isGeneratingName ? <Loader2 className="animate-spin" /> : <Wand2 className="mr-2 h-5 w-5"/>}
+                    Randomize
+                  </Button>
+                </div>
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="password" className="text-lg">Password</Label>
               <Input

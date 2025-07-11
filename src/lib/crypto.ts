@@ -43,7 +43,7 @@ export function generateSecurityKey(): string {
 }
 
 // Encrypts a file. Prepends salt, IV, and metadata to the ciphertext.
-export async function encryptFile(file: File, password: string, securityKey: string): Promise<{ blob: Blob, filename: string }> {
+export async function encryptFile(file: File, password: string, securityKey: string): Promise<{ blob: Blob }> {
   const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
   const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
   const key = await deriveKey(password, securityKey, salt);
@@ -68,11 +68,7 @@ export async function encryptFile(file: File, password: string, securityKey: str
     new Uint8Array(encryptedContent)
   ]);
 
-  const extension = file.name.split('.').pop();
-  const baseName = extension ? file.name.substring(0, file.name.length - extension.length - 1) : file.name;
-  const newFilename = `${baseName}.fortress`;
-  
-  return { blob: combined, filename: newFilename };
+  return { blob: combined };
 }
 
 // Decrypts a file. Extracts salt, IV, and metadata from the start of the file.

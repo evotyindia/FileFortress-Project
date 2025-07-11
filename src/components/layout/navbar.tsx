@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { Logo } from "@/components/icons"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Menu, X, LayoutDashboard, Lock, Unlock, FlaskConical, Info, LifeBuoy } from "lucide-react"
 
@@ -59,18 +59,14 @@ export function Navbar() {
                     </SheetTrigger>
                     <SheetContent side="right" className="w-[280px] p-0">
                         <div className="flex flex-col h-full">
-                           <div className="flex justify-between items-center p-4 border-b">
-                                <Link href="/" className="flex items-center space-x-2">
-                                    <Logo className="h-6 w-6 text-primary" />
-                                    <span className="font-bold font-headline">FileFortress</span>
-                                </Link>
-                                <SheetClose asChild>
-                                    <Button variant="ghost" size="icon">
-                                        <X className="h-6 w-6" />
-                                        <span className="sr-only">Close Menu</span>
-                                    </Button>
-                                </SheetClose>
-                            </div>
+                           <SheetHeader className="p-4 border-b">
+                                <SheetTitle className="text-left">
+                                     <Link href="/" className="flex items-center space-x-2">
+                                        <Logo className="h-6 w-6 text-primary" />
+                                        <span className="font-bold font-headline">FileFortress</span>
+                                    </Link>
+                                </SheetTitle>
+                           </SheetHeader>
                            
                             <nav className="flex flex-col gap-1 flex-1 p-4">
                                 {navLinks.map(link => {

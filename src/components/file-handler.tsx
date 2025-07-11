@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AlertTriangle, UploadCloud, File, Loader2, Key, Copy, Download, ShieldCheck, FileText, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -162,31 +163,32 @@ export function FileHandler({ mode }: FileHandlerProps) {
         <CardContent className="space-y-8">
             <div className="space-y-2">
                 <Label htmlFor="generated-key" className="text-lg">Your New Security Key</Label>
-                <div className="flex items-center gap-2">
-                    <Input
+                 <div className="relative">
+                    <Textarea
                         id="generated-key"
-                        type="text"
                         readOnly
                         value={encryptedResult.securityKey}
-                        className="h-12 text-base font-code truncate"
+                        className="h-28 text-base font-code pr-12"
                         placeholder="Your generated security key"
                     />
-                    <Button type="button" variant="outline" onClick={() => handleCopyKey(encryptedResult.securityKey)} size="icon" className="h-12 w-12 flex-shrink-0">
-                        <Copy className="w-5 h-5" />
+                    <Button type="button" variant="outline" onClick={() => handleCopyKey(encryptedResult.securityKey)} size="icon" className="absolute top-2 right-2 h-9 w-9 flex-shrink-0">
+                        <Copy className="w-4 h-4" />
                         <span className="sr-only">Copy Key</span>
                     </Button>
                 </div>
             </div>
 
             <Alert variant="destructive" className="text-base p-5">
-                <div className="flex items-center gap-3">
-                    <AlertTriangle className="h-6 w-6" />
-                    <AlertTitle className="font-headline text-lg m-0">Crucial: Save Your Keys!</AlertTitle>
+                <div className="flex items-start gap-4">
+                    <AlertTriangle className="h-8 w-8" />
+                    <div className="flex-1">
+                      <AlertTitle className="font-headline text-lg m-0">Crucial: Save Your Keys!</AlertTitle>
+                      <AlertDescription className="mt-2">
+                          You MUST save both your password and this security key.
+                          <strong> Losing either will result in permanent data loss.</strong>
+                      </AlertDescription>
+                    </div>
                 </div>
-                <AlertDescription className="mt-3 pl-9">
-                    You MUST save both your password and the security key.
-                    <strong> Losing either will result in permanent data loss.</strong>
-                </AlertDescription>
             </Alert>
             
             <div className="grid sm:grid-cols-2 gap-6">
@@ -283,17 +285,16 @@ export function FileHandler({ mode }: FileHandlerProps) {
             {mode === 'encrypt' ? (
                 <div className="space-y-2">
                     <Label htmlFor="security-key" className="text-lg">Generated Security Key</Label>
-                    <div className="flex items-center gap-2">
-                        <Input
+                     <div className="relative">
+                        <Textarea
                             id="security-key"
-                            type="text"
                             readOnly
                             placeholder="A key will be generated when you select a file"
                             value={securityKey}
-                            className="h-12 text-lg font-code truncate bg-muted/50"
+                            className="h-28 text-base font-code pr-12 bg-muted/50"
                         />
-                         <Button type="button" variant="outline" onClick={() => handleCopyKey(securityKey)} size="icon" className="h-12 w-12 flex-shrink-0" disabled={!securityKey}>
-                            <Copy className="w-5 h-5" />
+                         <Button type="button" variant="outline" onClick={() => handleCopyKey(securityKey)} size="icon" className="absolute top-2 right-2 h-9 w-9 flex-shrink-0" disabled={!securityKey}>
+                            <Copy className="w-4 h-4" />
                             <span className="sr-only">Copy Key</span>
                         </Button>
                     </div>
@@ -315,8 +316,8 @@ export function FileHandler({ mode }: FileHandlerProps) {
           </div>
           
           <Alert variant="destructive" className="text-base p-5">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="h-6 w-6 mt-1" />
+            <div className="flex items-start gap-4">
+              <AlertTriangle className="h-8 w-8" />
               <div className="flex-1">
                 <AlertTitle className="font-headline text-lg">Important: Save Your Keys!</AlertTitle>
                 <AlertDescription className="mt-2">

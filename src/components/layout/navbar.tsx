@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { Logo } from "@/components/icons"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 
@@ -58,6 +58,9 @@ export function Navbar() {
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="right" className="w-[280px]">
+                        <SheetHeader className="sr-only">
+                          <SheetTitle>Menu</SheetTitle>
+                        </SheetHeader>
                         <div className="flex flex-col h-full">
                            <div className="flex justify-between items-center border-b pb-4 mb-4">
                                 <Link href="/" className="flex items-center space-x-2">

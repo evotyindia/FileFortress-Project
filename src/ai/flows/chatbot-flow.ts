@@ -169,14 +169,13 @@ const chatbotPrompt = ai.definePrompt({
   - If they ask you to generate a security key, use the 'generateSecurityKey' tool.
   `,
   prompt: `{{#if history}}
-  Conversation History:
-  {{#each history}}
-  {{#if (eq this.role 'user')}}User: {{this.text}}{{/if}}
-  {{#if (eq this.role 'bot')}}Cipher: {{this.text}}{{/if}}
-  {{/each}}
-  {{/if}}
+Conversation History:
+{{#each history}}
+{{this.role}}: {{this.text}}
+{{/each}}
+{{/if}}
 
-  Current User message: {{{message}}}`,
+Current User message: {{{message}}}`,
 });
 
 const chatbotFlow = ai.defineFlow(

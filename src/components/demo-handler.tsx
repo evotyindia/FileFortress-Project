@@ -64,7 +64,7 @@ export function DemoHandler() {
     try {
       const result = await decryptText(encryptedText, password, securityKey);
       setDecryptedText(result);
-    } catch (error) {
+    } catch (error) => {
       toast({ variant: "destructive", title: "Decryption Failed", description: "Check your password/key or re-encrypt the text." });
     } finally {
       setIsProcessing(false);
@@ -103,19 +103,21 @@ export function DemoHandler() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="security-key" className="text-base">Security Key</Label>
-            <div className="flex items-center gap-2">
-                <Input
-                  id="security-key"
-                  type="text"
-                  placeholder="Generate or enter a key"
-                  value={securityKey}
-                  onChange={(e) => setSecurityKey(e.target.value)}
-                  className="text-base"
-                  autoComplete="off"
-                />
-                <Button type="button" variant="outline" onClick={() => handleCopyKey(securityKey, 'Security key')} size="icon" disabled={!securityKey}>
-                    <Copy className="w-4 h-4" />
-                </Button>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <div className="relative flex-grow">
+                    <Input
+                      id="security-key"
+                      type="text"
+                      placeholder="Generate or enter a key"
+                      value={securityKey}
+                      onChange={(e) => setSecurityKey(e.target.value)}
+                      className="text-base pr-10"
+                      autoComplete="off"
+                    />
+                     <Button type="button" variant="ghost" onClick={() => handleCopyKey(securityKey, 'Security key')} size="icon" className="absolute top-1/2 right-1 -translate-y-1/2 h-8 w-8 text-muted-foreground" disabled={!securityKey}>
+                        <Copy className="w-4 h-4" />
+                    </Button>
+                </div>
                 <Button type="button" variant="secondary" onClick={handleGenerateKey} className="px-3">
                     <Key className="w-4 h-4 mr-2" />
                     Generate

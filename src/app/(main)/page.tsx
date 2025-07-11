@@ -9,17 +9,17 @@ export default function DashboardPage() {
       <div className="container mx-auto px-4 py-12 md:py-24">
         {/* Hero Section */}
         <section className="text-center">
-          <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tight text-primary">
+          <h1 className="text-6xl md:text-7xl font-bold font-headline tracking-tight text-primary">
             FileFortress
           </h1>
-          <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
+          <p className="mt-6 max-w-3xl mx-auto text-xl md:text-xl text-muted-foreground">
             Secure your files with robust, client-side encryption. Your data is encrypted and decrypted directly in your browser. Nothing is ever sent to our servers.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
-            <Button asChild size="lg" className="w-full sm:w-auto">
+            <Button asChild size="lg" className="w-full sm:w-auto text-lg py-7">
               <Link href="/encrypt">Encrypt a File <Lock className="ml-2 h-5 w-5" /></Link>
             </Button>
-            <Button asChild variant="secondary" size="lg" className="w-full sm:w-auto">
+            <Button asChild variant="secondary" size="lg" className="w-full sm:w-auto text-lg py-7">
               <Link href="/decrypt">Decrypt a File <Unlock className="ml-2 h-5 w-5" /></Link>
             </Button>
           </div>
@@ -83,17 +83,17 @@ export default function DashboardPage() {
             <div className="relative bg-background p-2 flex flex-col items-center text-center">
                 <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-bold font-headline mb-6 z-10">1</div>
                 <h3 className="font-headline font-semibold text-xl">Upload & Secure</h3>
-                <p className="text-muted-foreground text-base mt-2">Choose a file and create a strong password and security key.</p>
+                <p className="text-muted-foreground text-lg mt-2">Choose a file and create a strong password and security key.</p>
             </div>
             <div className="relative bg-background p-2 flex flex-col items-center text-center">
                 <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-bold font-headline mb-6 z-10">2</div>
                 <h3 className="font-headline font-semibold text-xl">Encrypt In-Browser</h3>
-                <p className="text-muted-foreground text-base mt-2">Your file is instantly encrypted on your device. No uploads needed.</p>
+                <p className="text-muted-foreground text-lg mt-2">Your file is instantly encrypted on your device. No uploads needed.</p>
             </div>
             <div className="relative bg-background p-2 flex flex-col items-center text-center">
                 <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-bold font-headline mb-6 z-10">3</div>
                 <h3 className="font-headline font-semibold text-xl">Download & Save</h3>
-                <p className="text-muted-foreground text-base mt-2">Download the encrypted file. Only you can unlock it with your keys.</p>
+                <p className="text-muted-foreground text-lg mt-2">Download the encrypted file. Only you can unlock it with your keys.</p>
             </div>
           </div>
         </section>

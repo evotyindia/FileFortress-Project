@@ -275,7 +275,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                     <AlertTriangle className="h-8 w-8" />
                     <div className="flex-1">
                       <AlertTitle className="font-headline text-lg m-0">Crucial: Save Your Keys!</AlertTitle>
-                      <AlertDescription className="mt-2">
+                      <AlertDescription className="mt-2 text-lg">
                           You MUST save both your password and this security key.
                           <strong> Losing either will result in permanent data loss.</strong>
                       </AlertDescription>
@@ -286,7 +286,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
             <div className="grid sm:grid-cols-2 gap-6">
                  <Button
                     size="lg"
-                    className="w-full text-lg h-20 flex-col gap-1"
+                    className="w-full text-xl h-20 flex-col gap-1"
                     onClick={() => downloadBlob(encryptedResult.blob, encryptedResult.filename)}
                     >
                     <Download className="w-6 h-6 mb-1" />
@@ -295,7 +295,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 <Button
                     size="lg"
                     variant="secondary"
-                    className="w-full text-lg h-20 flex-col gap-1"
+                    className="w-full text-xl h-20 flex-col gap-1"
                     onClick={handleDownloadKey}
                     >
                     <FileText className="w-6 h-6 mb-1" />
@@ -399,7 +399,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="h-12 text-lg pr-12"
-                  autoComplete="off"
+                  autoComplete="new-password"
                 />
                 <Button type="button" variant="ghost" size="icon" className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 text-muted-foreground" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -431,7 +431,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                     onBlur={() => setConfirmPasswordBlurred(true)}
                     required
                     className="h-12 text-lg pr-12"
-                    autoComplete="off"
+                    autoComplete="new-password"
                   />
                   <Button type="button" variant="ghost" size="icon" className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 text-muted-foreground" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                     {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -462,7 +462,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                             readOnly
                             placeholder="A key will be generated when you select a file"
                             value={securityKey}
-                            className="h-28 text-base font-code pr-12 bg-muted/50"
+                            className="h-28 text-lg font-code pr-12 bg-muted/50"
                         />
                          <Button type="button" variant="outline" onClick={() => handleCopyKey(securityKey)} size="icon" className="absolute top-2 right-2 h-9 w-9 flex-shrink-0" disabled={!securityKey}>
                             <Copy className="w-4 h-4" />
@@ -509,7 +509,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
               <AlertTriangle className="h-8 w-8" />
               <div className="flex-1">
                 <AlertTitle className="font-headline text-lg">Important: Save Your Keys!</AlertTitle>
-                <AlertDescription className="mt-2">
+                <AlertDescription className="mt-2 text-lg">
                   Both your password AND the security key are required to unlock your files. FileFortress does <strong>NOT</strong> store these keys.
                   <br />
                   <strong>Lose them, and your files are gone forever.</strong> Please keep them safe and backed up!
@@ -518,7 +518,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
             </div>
           </Alert>
           
-          <Button type="submit" size="lg" className="w-full text-lg h-14" disabled={isProcessing || !file}>
+          <Button type="submit" size="lg" className="w-full text-xl h-16" disabled={isProcessing || !file}>
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />

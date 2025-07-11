@@ -12,7 +12,7 @@ export default function AboutPage() {
     <div className="container mx-auto px-4 py-12 md:py-20">
       <div className="max-w-4xl mx-auto">
         <section className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold font-headline">About FileFortress</h1>
+          <h1 className="text-5xl md:text-6xl font-bold font-headline">About FileFortress</h1>
           <p className="mt-4 text-lg md:text-xl text-muted-foreground">
             Your personal digital vault, built on privacy and trust.
           </p>
@@ -37,7 +37,7 @@ export default function AboutPage() {
                 <Cpu className="w-10 h-10 text-primary" />
               </div>
               <h3 className="font-headline text-2xl font-semibold">Client-Side First</h3>
-              <p className="text-muted-foreground mt-2 text-base">
+              <p className="text-muted-foreground mt-2 text-lg">
                 Every cryptographic operation—encryption, decryption, and key derivation—happens directly in your web browser. Your files and keys are never transmitted to, or stored on, our servers.
               </p>
             </div>
@@ -46,7 +46,7 @@ export default function AboutPage() {
                 <ServerOff className="w-10 h-10 text-primary" />
               </div>
               <h3 className="font-headline text-2xl font-semibold">Zero-Knowledge</h3>
-              <p className="text-muted-foreground mt-2 text-base">
+              <p className="text-muted-foreground mt-2 text-lg">
                 We know nothing about your data. Since we never see your files or your keys, we cannot access, share, or lose them. The privacy of your data is mathematically guaranteed.
               </p>
             </div>
@@ -55,7 +55,7 @@ export default function AboutPage() {
                 <ShieldCheck className="w-10 h-10 text-primary" />
               </div>
               <h3 className="font-headline text-2xl font-semibold">Industry-Standard Crypto</h3>
-              <p className="text-muted-foreground mt-2 text-base">
+              <p className="text-muted-foreground mt-2 text-lg">
                 We use the Web Crypto API, a standardized and audited browser technology, to perform all operations. We employ AES-GCM for encryption and PBKDF2 for key stretching, trusted standards in cybersecurity.
               </p>
             </div>

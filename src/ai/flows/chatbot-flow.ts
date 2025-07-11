@@ -30,23 +30,27 @@ export type ChatbotOutput = z.infer<typeof ChatbotOutputSchema>;
 // AI Tools
 // //////////////////////////////////////////////////////////////////////////////
 
+const DEMO_PASSWORD = "demo-password-for-chatbot";
+
 const encryptTextTool = ai.defineTool(
   {
     name: 'encryptText',
-    description: 'Encrypts a given piece of text for demonstration purposes. It returns a single encrypted string that contains all the necessary components for decryption later.',
+    description: 'Encrypts a given piece of text for demonstration purposes. It returns the encrypted string and the security key needed for decryption.',
     inputSchema: z.object({
       text: z.string().describe('The text to encrypt.'),
     }),
-    outputSchema: z.string(),
+    outputSchema: z.object({
+        encryptedText: z.string(),
+        securityKey: z.string(),
+    }),
   },
   async ({text}) => {
     try {
-      const password = generateSecurityKey().substring(0, 16); // Use a portion for a password
       const securityKey = generateSecurityKey();
-      const encryptedText = await encryptText(text, password, securityKey);
-      return encryptedText;
+      const encryptedText = await encryptText(text, DEMO_PASSWORD, securityKey);
+      return { encryptedText, securityKey };
     } catch (e: any) {
-      return `Encryption failed: ${e.message}`;
+      return { encryptedText: `Encryption failed: ${e.message}`, securityKey: "" };
     }
   }
 );
@@ -54,19 +58,18 @@ const encryptTextTool = ai.defineTool(
 const decryptTextTool = ai.defineTool(
   {
     name: 'decryptText',
-    description: 'Decrypts a given piece of encrypted text using a password and a security key. Returns the original text.',
+    description: 'Decrypts a given piece of encrypted text using a security key. Returns the original text.',
     inputSchema: z.object({
       encryptedText: z.string().describe('The base64 encoded text to decrypt.'),
-      password: z.string().describe('The password used for encryption.'),
-      securityKey: z.string().describe('The security key used for encryption.'),
+      securityKey: z.string().describe('The security key provided during encryption.'),
     }),
     outputSchema: z.string(),
   },
-  async ({encryptedText, password, securityKey}) => {
+  async ({encryptedText, securityKey}) => {
     try {
-      return await decryptText(encryptedText, password, securityKey);
+      return await decryptText(encryptedText, DEMO_PASSWORD, securityKey);
     } catch (e: any) {
-      return `Decryption failed: ${e.message}`;
+      return `Decryption failed: ${e.message}. Make sure you are using the correct encrypted message and security key.`;
     }
   }
 );
@@ -130,18 +133,19 @@ const chatbotPrompt = ai.definePrompt({
   ### Encryption
   - If a user asks you to encrypt text, you ONLY need the text itself. You do not need a password or key from them.
   - Call the 'encryptText' tool with the user's text.
-  - The tool will return a single encrypted message string.
+  - The tool will return both the encrypted message and the security key needed to decrypt it.
   - **CRITICAL FORMATTING**: Your response for encryption MUST follow this exact format. Do not add any other text.
-    - Start with a short sentence like "I've encrypted your message. For a real file, you would also need to save your password and security key, but for this demo, you can just use the encrypted text below:"
-    - Then, on a new line, provide the encrypted message using this exact label:
-    - ENCRYPTED_MESSAGE[...]
+    - Start with a short sentence like "I've encrypted your message. You'll need the security key below to decrypt it."
+    - Then, on a new line, provide the security key using this exact label: "SECURITY_KEY[the_key_here]"
+    - Then, on another new line, provide the encrypted message using this exact label: "ENCRYPTED_MESSAGE[the_encrypted_string_here]"
   - Example Response:
-    "I've encrypted your message. For a real file, you would also need to save your password and security key, but for this demo, you can just use the encrypted text below:
+    "I've encrypted your message. You'll need the security key below to decrypt it.
+    SECURITY_KEY[a_very_long_security_key_would_go_here]
     ENCRYPTED_MESSAGE[a_very_long_encrypted_string_would_go_here]"
 
   ### Decryption
-  - If a user asks you to decrypt text, you MUST have the encrypted text, a password, AND a security key.
-  - If they are missing any of these three pieces of information, ask for the missing information before calling the 'decryptText' tool.
+  - If a user asks you to decrypt text, you MUST have the encrypted text AND the security key.
+  - If they are missing any of this information, ask for the missing information before calling the 'decryptText' tool.
   - After performing a decryption, remind the user that this is just for demonstration and that for real files, they should use the Encrypt/Decrypt pages.
 
   ### Other Tools

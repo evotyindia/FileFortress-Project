@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Bot, User, Loader2, Copy } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User, Loader2, Copy, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -20,10 +20,14 @@ type Message = {
 
 const EncryptedMessage = ({ text }: { text: string }) => {
     const { toast } = useToast();
-    
-    const encryptedTextMatch = text.match(/ENCRYPTED_MESSAGE\[(.*?)\]/);
-    const encryptedText = encryptedTextMatch ? encryptedTextMatch[1] : '';
+    const [showEncrypted, setShowEncrypted] = useState(false);
   
+    const encryptedTextMatch = text.match(/ENCRYPTED_MESSAGE\[(.*?)\]/s);
+    const securityKeyMatch = text.match(/SECURITY_KEY\[(.*?)\]/s);
+
+    const encryptedText = encryptedTextMatch ? encryptedTextMatch[1] : '';
+    const securityKey = securityKeyMatch ? securityKeyMatch[1] : '';
+
     if (!encryptedText) {
       return <p className="text-sm break-words">{text}</p>;
     }
@@ -32,22 +36,43 @@ const EncryptedMessage = ({ text }: { text: string }) => {
       navigator.clipboard.writeText(value);
       toast({ title: `${name} copied to clipboard.` });
     };
-
-    const introText = text.substring(0, text.indexOf('ENCRYPTED_MESSAGE['));
+  
+    const introText = text.substring(0, text.indexOf('SECURITY_KEY['));
   
     return (
       <div className="text-sm break-words space-y-3">
         {introText && <p>{introText}</p>}
         
-        <div className="space-y-2">
+        {securityKey && (
+          <div className="space-y-2">
             <div className="flex justify-between items-center">
-                <span className="font-semibold">Encrypted Message</span>
-                <Button variant="outline" size="sm" onClick={() => handleCopy(encryptedText, 'Encrypted Message')} className="h-7">
-                    <Copy className="h-3 w-3 mr-2" />
-                    Copy
-                </Button>
+              <span className="font-semibold">Security Key</span>
+              <Button variant="outline" size="sm" onClick={() => handleCopy(securityKey, 'Security Key')} className="h-7">
+                <Copy className="h-3 w-3 mr-2" />
+                Copy
+              </Button>
             </div>
-            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider break-all">********************</p>
+            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider break-all">{securityKey}</p>
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="font-semibold">Encrypted Message</span>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setShowEncrypted(!showEncrypted)} className="h-7">
+                {showEncrypted ? <EyeOff className="h-3 w-3 mr-2" /> : <Eye className="h-3 w-3 mr-2" />}
+                {showEncrypted ? 'Hide' : 'Show'}
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => handleCopy(encryptedText, 'Encrypted Message')} className="h-7">
+                <Copy className="h-3 w-3 mr-2" />
+                Copy
+              </Button>
+            </div>
+          </div>
+          <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider break-all">
+            {showEncrypted ? encryptedText : '********************'}
+          </p>
         </div>
       </div>
     );
@@ -198,7 +223,7 @@ export function ChatbotWidget() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask a question..."
                 disabled={isLoading}
-                autoComplete="off"
+                autoComplete="new-password"
               />
               <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
                 <Send className="h-4 w-4" />

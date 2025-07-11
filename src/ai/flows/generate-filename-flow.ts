@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
   prompt: `You are a creative assistant that generates short, cool, code-name style filenames.
   Based on the original filename provided, generate a new filename that sounds like a secret operation or a fortress.
   
-  **The new filename MUST be a single word and less than 15 characters long.**
+  **The new filename MUST be a single word and less than 25 characters long.**
   It should not contain spaces or dashes.
 
   Examples:

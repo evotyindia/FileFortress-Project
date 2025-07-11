@@ -54,7 +54,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
         setSecurityKey(generateSecurityKey());
       }
       const baseName = file.name.split('.').slice(0, -1).join('.');
-      setFilename((baseName || file.name).substring(0, 15));
+      setFilename((baseName || file.name).substring(0, 25));
     } else {
       setFilename("");
     }
@@ -101,7 +101,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
     setIsGeneratingName(true);
     try {
         const result = await generateFilename({ originalFilename: file.name });
-        setFilename(result.newFilename.substring(0, 15));
+        setFilename(result.newFilename.substring(0, 25));
     } catch (error) {
         console.error("Error generating filename: ", error);
         toast({ variant: "destructive", title: "Could not generate name", description: "The AI service might be busy. Please try again." });
@@ -370,9 +370,9 @@ export function FileHandler({ mode }: FileHandlerProps) {
                           type="text"
                           placeholder="Enter a filename"
                           value={filename}
-                          onChange={(e) => setFilename(e.target.value.substring(0, 15))}
+                          onChange={(e) => setFilename(e.target.value.substring(0, 25))}
                           required
-                          maxLength={15}
+                          maxLength={25}
                           className="h-auto text-lg border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 flex-1"
                       />
                       <span className="flex items-center px-3 text-muted-foreground bg-transparent">.fortress</span>

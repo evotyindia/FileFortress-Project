@@ -339,25 +339,27 @@ export function FileHandler({ mode }: FileHandlerProps) {
 
           <div className="space-y-6">
              {mode === 'encrypt' && (
-              <div className="space-y-2">
-                <Label htmlFor="filename" className="text-lg">Encrypted Filename</Label>
-                <div className="flex items-center gap-2">
-                    <div className="flex h-12 w-full rounded-md border border-input bg-background text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-                        <Input
-                            id="filename"
-                            type="text"
-                            placeholder="Enter a filename"
-                            value={filename}
-                            onChange={(e) => setFilename(e.target.value)}
-                            required
-                            className="h-auto text-lg border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 flex-1"
-                        />
-                        <span className="flex items-center px-3 text-muted-foreground bg-transparent">.fortress</span>
-                    </div>
-                  <Button type="button" variant="secondary" onClick={handleRandomizeName} disabled={!file || isGeneratingName} className="h-12">
-                    {isGeneratingName ? <Loader2 className="animate-spin" /> : <Wand2 className="mr-2 h-5 w-5"/>}
-                    Randomize
-                  </Button>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="filename" className="text-lg">Encrypted Filename</Label>
+                  <div className="flex h-12 mt-2 w-full rounded-md border border-input bg-background text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                      <Input
+                          id="filename"
+                          type="text"
+                          placeholder="Enter a filename"
+                          value={filename}
+                          onChange={(e) => setFilename(e.target.value)}
+                          required
+                          className="h-auto text-lg border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 flex-1"
+                      />
+                      <span className="flex items-center px-3 text-muted-foreground bg-transparent">.fortress</span>
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                    <Button type="button" variant="secondary" onClick={handleRandomizeName} disabled={!file || isGeneratingName}>
+                        {isGeneratingName ? <Loader2 className="animate-spin" /> : <Wand2 className="mr-2 h-5 w-5"/>}
+                        Randomize
+                    </Button>
                 </div>
               </div>
             )}

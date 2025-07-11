@@ -12,6 +12,7 @@ import { chatbot } from '@/ai/flows/chatbot-flow';
 import { cn } from '@/lib/utils';
 import type { ChatbotOutput } from '@/ai/flows/chatbot-flow';
 import { useToast } from '@/hooks/use-toast';
+import ReactMarkdown from 'react-markdown';
 
 type SuggestedLink = {
     text: string;
@@ -35,7 +36,11 @@ const EncryptedMessage = ({ text }: { text: string }) => {
     const securityKey = securityKeyMatch ? securityKeyMatch[1] : '';
 
     if (!encryptedText) {
-      return <p className="text-sm break-words">{text}</p>;
+      return (
+        <div className="prose prose-sm dark:prose-invert break-words">
+           <ReactMarkdown>{text}</ReactMarkdown>
+        </div>
+      );
     }
   
     const handleCopy = (value: string, name: string) => {
@@ -209,7 +214,13 @@ export function ChatbotWidget() {
                         {message.role === 'bot' && message.text.includes("ENCRYPTED_MESSAGE") ? (
                             <EncryptedMessage text={message.text} />
                         ) : (
-                            <p className="text-sm break-words">{message.text}</p>
+                            <div className="prose prose-sm dark:prose-invert break-words max-w-none">
+                                <ReactMarkdown
+                                  components={{
+                                    p: ({node, ...props}) => <p className="my-2" {...props} />,
+                                  }}
+                                >{message.text}</ReactMarkdown>
+                            </div>
                         )}
                      </div>
                      {message.role === 'bot' && message.links && message.links.length > 0 && (
@@ -219,7 +230,7 @@ export function ChatbotWidget() {
                                     <Link href={link.href} onClick={() => setIsOpen(false)}>
                                         <LinkIcon className="h-3 w-3 mr-2" />
                                         {link.text}
-                                    </Link>
+                                    </A>
                                 </Button>
                             ))}
                         </div>

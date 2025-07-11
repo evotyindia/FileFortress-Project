@@ -32,7 +32,7 @@ export function Navbar() {
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-2">
-            <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+            <nav className="hidden md:flex items-center justify-end space-x-6 text-sm font-medium">
               {navLinks.map(link => (
                 <Link
                   key={link.href}
@@ -45,13 +45,13 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-            </nav>
-            <div className="hidden md:block">
               <ThemeToggle />
-            </div>
+            </nav>
             
-            <div className="md:hidden flex items-center gap-2">
-                <ThemeToggle />
+            <div className="md:hidden flex items-center">
+                <div className="mr-2">
+                  <ThemeToggle />
+                </div>
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -63,10 +63,12 @@ export function Navbar() {
                         <div className="flex flex-col h-full">
                            <SheetHeader className="p-4 border-b">
                                 <SheetTitle className="sr-only">Menu</SheetTitle>
-                                <Link href="/" className="flex items-center space-x-2">
-                                    <Logo className="h-6 w-6 text-primary" />
-                                    <span className="font-bold font-headline">FileFortress</span>
-                                </Link>
+                                <SheetClose asChild>
+                                  <Link href="/" className="flex items-center space-x-2">
+                                      <Logo className="h-6 w-6 text-primary" />
+                                      <span className="font-bold font-headline">FileFortress</span>
+                                  </Link>
+                                </SheetClose>
                            </SheetHeader>
                            
                             <nav className="flex flex-col gap-1 flex-1 p-4">

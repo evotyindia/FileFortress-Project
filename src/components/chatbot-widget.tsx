@@ -21,14 +21,9 @@ type Message = {
 const EncryptedMessage = ({ text }: { text: string }) => {
     const { toast } = useToast();
     
-    const password = text.match(/PASSWORD_HERE\[(.*?)\]/)?.[1];
-    const securityKey = text.match(/SECURITY_KEY_HERE\[(.*?)\]/)?.[1];
     const encryptedText = text.match(/ENCRYPTED_MESSAGE\[(.*)\]/)?.[1];
-    
-    // Check if all parts are present
-    const isFormattedEncryption = password && securityKey && encryptedText;
   
-    if (!isFormattedEncryption) {
+    if (!encryptedText) {
       return <p className="text-sm break-words">{text}</p>;
     }
   
@@ -37,34 +32,12 @@ const EncryptedMessage = ({ text }: { text: string }) => {
       toast({ title: `${name} copied to clipboard.` });
     };
 
-    const introText = text.substring(0, text.indexOf('PASSWORD_HERE['));
+    const introText = text.substring(0, text.indexOf('ENCRYPTED_MESSAGE['));
   
     return (
       <div className="text-sm break-words space-y-3">
         {introText && <p>{introText}</p>}
         
-        <div className="space-y-2">
-            <div className="flex justify-between items-center">
-                <span className="font-semibold">Password</span>
-                <Button variant="outline" size="sm" onClick={() => handleCopy(password, 'Password')} className="h-7">
-                    <Copy className="h-3 w-3 mr-2" />
-                    Copy
-                </Button>
-            </div>
-            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider">************</p>
-        </div>
-
-        <div className="space-y-2">
-            <div className="flex justify-between items-center">
-                <span className="font-semibold">Security Key</span>
-                <Button variant="outline" size="sm" onClick={() => handleCopy(securityKey, 'Security Key')} className="h-7">
-                    <Copy className="h-3 w-3 mr-2" />
-                    Copy the key
-                </Button>
-            </div>
-            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider">************</p>
-        </div>
-
         <div className="space-y-2">
              <div className="flex justify-between items-center">
                 <span className="font-semibold">Encrypted Message</span>
@@ -73,9 +46,8 @@ const EncryptedMessage = ({ text }: { text: string }) => {
                     Copy
                 </Button>
             </div>
-            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider">********************</p>
+            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider break-all">********************</p>
         </div>
-
       </div>
     );
   };

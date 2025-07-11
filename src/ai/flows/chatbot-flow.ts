@@ -33,28 +33,20 @@ export type ChatbotOutput = z.infer<typeof ChatbotOutputSchema>;
 const encryptTextTool = ai.defineTool(
   {
     name: 'encryptText',
-    description: 'Encrypts a given piece of text. This tool automatically generates a secure password and key, and returns the encrypted text along with the credentials needed for decryption.',
+    description: 'Encrypts a given piece of text for demonstration purposes. It returns a single encrypted string that contains all the necessary components for decryption later.',
     inputSchema: z.object({
       text: z.string().describe('The text to encrypt.'),
     }),
-    outputSchema: z.object({
-        encryptedText: z.string(),
-        password: z.string(),
-        securityKey: z.string(),
-    }),
+    outputSchema: z.string(),
   },
   async ({text}) => {
     try {
       const password = generateSecurityKey().substring(0, 16); // Use a portion for a password
       const securityKey = generateSecurityKey();
       const encryptedText = await encryptText(text, password, securityKey);
-      return { encryptedText, password, securityKey };
+      return encryptedText;
     } catch (e: any) {
-      return {
-        encryptedText: `Encryption failed: ${e.message}`,
-        password: '',
-        securityKey: '',
-      };
+      return `Encryption failed: ${e.message}`;
     }
   }
 );
@@ -94,7 +86,7 @@ const generateKeyTool = ai.defineTool(
 
 // //////////////////////////////////////////////////////////////////////////////
 // Main Chatbot Flow
-// //////////////////////////////////////////////////****************************
+// //////////////////////////////////////////////////////////////////////////////
 
 const chatbotPrompt = ai.definePrompt({
   name: 'chatbotPrompt',
@@ -138,19 +130,13 @@ const chatbotPrompt = ai.definePrompt({
   ### Encryption
   - If a user asks you to encrypt text, you ONLY need the text itself. You do not need a password or key from them.
   - Call the 'encryptText' tool with the user's text.
-  - The tool will return the encrypted text, a generated password, and a generated security key.
-  - You MUST then present this information to the user.
+  - The tool will return a single encrypted message string.
   - **CRITICAL FORMATTING**: Your response for encryption MUST follow this exact format. Do not add any other text.
-    - Start with a short sentence like "I've encrypted your message. Here are the details:"
-    - Then, on new lines, provide the password, security key, and encrypted message using these exact labels:
-    - PASSWORD_HERE[...]
-    - SECURITY_KEY_HERE[...]
+    - Start with a short sentence like "I've encrypted your message. For a real file, you would also need to save your password and security key, but for this demo, you can just use the encrypted text below:"
+    - Then, on a new line, provide the encrypted message using this exact label:
     - ENCRYPTED_MESSAGE[...]
   - Example Response:
-    "I've encrypted your message. Here are the details:
-    You will need BOTH of these to decrypt your message later.
-    PASSWORD_HERE[randomly_generated_password]
-    SECURITY_KEY_HERE[randomly_generated_key]
+    "I've encrypted your message. For a real file, you would also need to save your password and security key, but for this demo, you can just use the encrypted text below:
     ENCRYPTED_MESSAGE[a_very_long_encrypted_string_would_go_here]"
 
   ### Decryption

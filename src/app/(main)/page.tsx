@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Lock, Unlock, ShieldCheck, Wallet, Atom } from "lucide-react";
-import { ChatbotWidget } from "@/components/chatbot-widget";
 
 export default function DashboardPage() {
   return (
@@ -99,7 +98,6 @@ export default function DashboardPage() {
           </div>
         </section>
       </div>
-      <ChatbotWidget />
     </>
   );
 }

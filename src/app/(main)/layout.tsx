@@ -2,6 +2,7 @@
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { MainLayoutClient } from "./layout-client";
+import { ChatbotWidget } from "@/components/chatbot-widget";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,6 +13,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <ChatbotWidget />
       </div>
     </MainLayoutClient>
   );

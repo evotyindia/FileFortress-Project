@@ -20,31 +20,62 @@ type Message = {
 
 const EncryptedMessage = ({ text }: { text: string }) => {
     const { toast } = useToast();
+    
+    const password = text.match(/PASSWORD_HERE\[(.*?)\]/)?.[1];
+    const securityKey = text.match(/SECURITY_KEY_HERE\[(.*?)\]/)?.[1];
     const encryptedText = text.match(/ENCRYPTED_MESSAGE\[(.*)\]/)?.[1];
+    
+    // Check if all parts are present
+    const isFormattedEncryption = password && securityKey && encryptedText;
   
-    if (!encryptedText) {
+    if (!isFormattedEncryption) {
       return <p className="text-sm break-words">{text}</p>;
     }
   
-    const handleCopy = () => {
-      navigator.clipboard.writeText(encryptedText);
-      toast({ title: "Encrypted message copied to clipboard." });
+    const handleCopy = (value: string, name: string) => {
+      navigator.clipboard.writeText(value);
+      toast({ title: `${name} copied to clipboard.` });
     };
 
-    const parts = text.split(/ENCRYPTED_MESSAGE\[.*\]/);
+    const introText = text.substring(0, text.indexOf('PASSWORD_HERE['));
   
     return (
-      <div className="text-sm break-words">
-        {parts[0]}
-        <div className="my-2 p-3 rounded-lg bg-background/50 border">
+      <div className="text-sm break-words space-y-3">
+        {introText && <p>{introText}</p>}
+        
+        <div className="space-y-2">
             <div className="flex justify-between items-center">
-                <span className="font-code text-muted-foreground tracking-wider">**********</span>
-                <Button variant="ghost" size="icon" onClick={handleCopy} className="h-8 w-8">
-                    <Copy className="h-4 w-4" />
+                <span className="font-semibold">Password</span>
+                <Button variant="outline" size="sm" onClick={() => handleCopy(password, 'Password')} className="h-7">
+                    <Copy className="h-3 w-3 mr-2" />
+                    Copy
                 </Button>
             </div>
+            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider">************</p>
         </div>
-        {parts[1]}
+
+        <div className="space-y-2">
+            <div className="flex justify-between items-center">
+                <span className="font-semibold">Security Key</span>
+                <Button variant="outline" size="sm" onClick={() => handleCopy(securityKey, 'Security Key')} className="h-7">
+                    <Copy className="h-3 w-3 mr-2" />
+                    Copy the key
+                </Button>
+            </div>
+            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider">************</p>
+        </div>
+
+        <div className="space-y-2">
+             <div className="flex justify-between items-center">
+                <span className="font-semibold">Encrypted Message</span>
+                <Button variant="outline" size="sm" onClick={() => handleCopy(encryptedText, 'Encrypted Message')} className="h-7">
+                    <Copy className="h-3 w-3 mr-2" />
+                    Copy
+                </Button>
+            </div>
+            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider">********************</p>
+        </div>
+
       </div>
     );
   };

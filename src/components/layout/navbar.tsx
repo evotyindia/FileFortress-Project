@@ -24,29 +24,29 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
-        <div className="flex items-center space-x-2">
-            <Link href="/" className="mr-6 flex items-center space-x-2">
-                <Logo className="h-6 w-6 text-primary" />
-                <span className="font-bold sm:inline-block font-headline">FileFortress</span>
-            </Link>
+        <div className="mr-4 flex">
+          <Link href="/" className="flex items-center space-x-2">
+            <Logo className="h-6 w-6 text-primary" />
+            <span className="font-bold sm:inline-block font-headline">FileFortress</span>
+          </Link>
         </div>
+
+        <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+          {navLinks.map(link => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "transition-colors hover:text-primary",
+                pathname === link.href ? "text-primary" : "text-muted-foreground"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
         
         <div className="flex flex-1 items-center justify-end space-x-2">
-           <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-            {navLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "transition-colors hover:text-primary",
-                  pathname === link.href ? "text-primary" : "text-muted-foreground"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-          
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <div className="md:hidden">

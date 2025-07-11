@@ -64,7 +64,7 @@ export function DemoHandler() {
     try {
       const result = await decryptText(encryptedText, password, securityKey);
       setDecryptedText(result);
-    } catch (error) => {
+    } catch (error) {
       toast({ variant: "destructive", title: "Decryption Failed", description: "Check your password/key or re-encrypt the text." });
     } finally {
       setIsProcessing(false);

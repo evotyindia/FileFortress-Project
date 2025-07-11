@@ -24,14 +24,14 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
-        <div className="flex-1 flex items-center">
+        <div className="flex items-center">
           <Link href="/" className="flex items-center space-x-2">
             <Logo className="h-6 w-6 text-primary" />
             <span className="font-bold sm:inline-block font-headline">FileFortress</span>
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-1 items-center justify-end gap-4">
             <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
               {navLinks.map(link => (
                 <Link
@@ -58,12 +58,11 @@ export function Navbar() {
                     <SheetContent side="right" className="w-[280px] p-0">
                         <div className="flex flex-col h-full">
                            <SheetHeader className="p-4 border-b">
-                                <SheetTitle className="text-left">
-                                     <Link href="/" className="flex items-center space-x-2">
-                                        <Logo className="h-6 w-6 text-primary" />
-                                        <span className="font-bold font-headline">FileFortress</span>
-                                    </Link>
-                                </SheetTitle>
+                                <SheetTitle className="sr-only">Menu</SheetTitle>
+                                <Link href="/" className="flex items-center space-x-2">
+                                    <Logo className="h-6 w-6 text-primary" />
+                                    <span className="font-bold font-headline">FileFortress</span>
+                                </Link>
                            </SheetHeader>
                            
                             <nav className="flex flex-col gap-1 flex-1 p-4">

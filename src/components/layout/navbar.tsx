@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation"
 import { Logo } from "@/components/icons"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
-import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import { Menu, X, LayoutDashboard, Lock, Unlock, FlaskConical, Info, LifeBuoy } from "lucide-react"
+import { Menu, LayoutDashboard, Lock, Unlock, FlaskConical, Info, LifeBuoy } from "lucide-react"
 
 const navLinks = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -31,7 +31,7 @@ export function Navbar() {
           </Link>
         </div>
 
-        <div className="flex flex-1 items-center justify-end gap-4">
+        <div className="flex flex-1 items-center justify-end gap-2">
             <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
               {navLinks.map(link => (
                 <Link
@@ -46,8 +46,12 @@ export function Navbar() {
                 </Link>
               ))}
             </nav>
-            <ThemeToggle />
-            <div className="md:hidden">
+            <div className="hidden md:block">
+              <ThemeToggle />
+            </div>
+            
+            <div className="md:hidden flex items-center gap-2">
+                <ThemeToggle />
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button variant="ghost" size="icon">

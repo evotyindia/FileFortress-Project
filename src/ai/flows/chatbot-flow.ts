@@ -24,6 +24,10 @@ export type ChatbotInput = z.infer<typeof ChatbotInputSchema>;
 
 const ChatbotOutputSchema = z.object({
   response: z.string().describe('The chatbot response to the user message.'),
+  suggestedLinks: z.array(z.object({
+    text: z.string().describe('The text to display on the link button.'),
+    href: z.string().describe('The URL path for the link (e.g., "/encrypt").'),
+  })).optional().describe('A list of relevant page links to suggest to the user.'),
 });
 export type ChatbotOutput = z.infer<typeof ChatbotOutputSchema>;
 
@@ -97,7 +101,7 @@ const chatbotPrompt = ai.definePrompt({
   input: {schema: ChatbotInputSchema},
   output: {schema: ChatbotOutputSchema},
   tools: [encryptTextTool, decryptTextTool, generateKeyTool],
-  system: `You are a helpful, friendly, and fun AI assistant named Cipher. Your primary role is to be an expert on the FileFortress website, but you are also a general-purpose AI that can answer questions, tell jokes, and teach users about cybersecurity.
+  system: `You are a helpful, friendly, and fun AI assistant named Cipher. Your primary role is to be an expert on the FileFortress website, but you are also a general-purpose AI that can answer questions about the current date, tell jokes, and teach users about cybersecurity.
 
   ## Your Persona
   - **Expert on FileFortress:** You know everything about the site. This is your top priority.
@@ -128,6 +132,12 @@ const chatbotPrompt = ai.definePrompt({
   *   **Demo Page (/demo):** An interactive page that demonstrates the encryption/decryption process in real-time with a simple text snippet instead of a file. It shows the original text, the encrypted output, and the decrypted result, helping users understand the process without uploading a file.
   *   **About Page (/about):** Contains detailed information on the mission, security philosophy, and the technical process of encryption.
   *   **Support Page (/support):** Provides information on how to get help, including using this AI assistant and an email address for technical support. It clearly states that password/key recovery is impossible due to the zero-knowledge design.
+
+  ## Interaction Guidelines
+
+  *   **Be Conversational:** Answer questions in a friendly and detailed manner.
+  *   **Suggest Links:** When you mention a specific page on the site, you MUST also populate the 'suggestedLinks' array in your output. For example, if you say "You can encrypt files on the Encrypt page," you should include \`{ "text": "Go to Encrypt Page", "href": "/encrypt" }\` in the \`suggestedLinks\` array.
+  *   **Current Date:** If asked for the date, provide it. The current date is: ${new Date().toLocaleDateString()}.
 
   ## Tool Usage Guidelines
 

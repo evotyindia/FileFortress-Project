@@ -2,7 +2,8 @@
 "use client"
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Bot, User, Loader2, Copy, Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
+import { MessageSquare, X, Send, Bot, User, Loader2, Copy, Eye, EyeOff, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,10 +13,15 @@ import { cn } from '@/lib/utils';
 import type { ChatbotOutput } from '@/ai/flows/chatbot-flow';
 import { useToast } from '@/hooks/use-toast';
 
+type SuggestedLink = {
+    text: string;
+    href: string;
+}
 
 type Message = {
   role: 'user' | 'bot';
   text: string;
+  links?: SuggestedLink[];
 };
 
 const EncryptedMessage = ({ text }: { text: string }) => {
@@ -156,7 +162,7 @@ export function ChatbotWidget() {
 
     try {
       const response: ChatbotOutput = await chatbot({ message: input });
-      const botMessage: Message = { role: 'bot', text: response.response };
+      const botMessage: Message = { role: 'bot', text: response.response, links: response.suggestedLinks };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       const errorMessage: Message = { role: 'bot', text: "Sorry, I'm having trouble connecting. Please try again later." };
@@ -195,12 +201,26 @@ export function ChatbotWidget() {
               {messages.map((message, index) => (
                 <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? "justify-end" : "justify-start")}>
                   {message.role === 'bot' && <Bot className="w-6 h-6 text-primary flex-shrink-0" />}
-                  <div className={cn("p-3 rounded-lg max-w-[80%]", message.role === 'user' ? "bg-primary text-primary-foreground" : "bg-muted")}>
-                     {message.role === 'bot' && message.text.includes("ENCRYPTED_MESSAGE") ? (
-                        <EncryptedMessage text={message.text} />
-                      ) : (
-                        <p className="text-sm break-words">{message.text}</p>
-                      )}
+                  <div className={cn("rounded-lg max-w-[80%]")}>
+                     <div className={cn("p-3 rounded-lg", message.role === 'user' ? "bg-primary text-primary-foreground" : "bg-muted")}>
+                        {message.role === 'bot' && message.text.includes("ENCRYPTED_MESSAGE") ? (
+                            <EncryptedMessage text={message.text} />
+                        ) : (
+                            <p className="text-sm break-words">{message.text}</p>
+                        )}
+                     </div>
+                     {message.role === 'bot' && message.links && message.links.length > 0 && (
+                        <div className="mt-2 flex flex-col items-start gap-2">
+                            {message.links.map((link, linkIndex) => (
+                                <Button asChild key={linkIndex} variant="outline" size="sm" className="w-full justify-start">
+                                    <Link href={link.href}>
+                                        <LinkIcon className="h-3 w-3 mr-2" />
+                                        {link.text}
+                                    </Link>
+                                </Button>
+                            ))}
+                        </div>
+                     )}
                   </div>
                    {message.role === 'user' && <User className="w-6 h-6 text-muted-foreground flex-shrink-0" />}
                 </div>

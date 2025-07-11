@@ -156,12 +156,15 @@ export function ChatbotWidget() {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: 'user', text: input };
-    setMessages(prev => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setInput('');
     setIsLoading(true);
 
     try {
-      const response: ChatbotOutput = await chatbot({ message: input });
+      // Pass the conversation history, excluding the initial welcome message if it's the only one.
+      const history = messages.length > 1 ? messages.map(m => ({role: m.role, text: m.text})) : [];
+      const response: ChatbotOutput = await chatbot({ message: input, history });
       const botMessage: Message = { role: 'bot', text: response.response, links: response.suggestedLinks };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
@@ -213,7 +216,7 @@ export function ChatbotWidget() {
                         <div className="mt-2 flex flex-col items-start gap-2">
                             {message.links.map((link, linkIndex) => (
                                 <Button asChild key={linkIndex} variant="outline" size="sm" className="w-full justify-start">
-                                    <Link href={link.href}>
+                                    <Link href={link.href} onClick={() => setIsOpen(false)}>
                                         <LinkIcon className="h-3 w-3 mr-2" />
                                         {link.text}
                                     </Link>

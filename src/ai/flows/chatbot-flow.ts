@@ -17,8 +17,14 @@ import {encryptText, decryptText, generateSecurityKey} from '@/lib/crypto';
 // Input and Output Schemas
 // //////////////////////////////////////////////////////////////////////////////
 
+const ChatbotHistorySchema = z.object({
+    role: z.enum(['user', 'bot']),
+    text: z.string(),
+});
+
 const ChatbotInputSchema = z.object({
   message: z.string().describe('The user message to the chatbot.'),
+  history: z.array(ChatbotHistorySchema).optional().describe('The previous conversation history.'),
 });
 export type ChatbotInput = z.infer<typeof ChatbotInputSchema>;
 
@@ -101,7 +107,7 @@ const chatbotPrompt = ai.definePrompt({
   input: {schema: ChatbotInputSchema},
   output: {schema: ChatbotOutputSchema},
   tools: [encryptTextTool, decryptTextTool, generateKeyTool],
-  system: `You are a helpful, friendly, and fun AI assistant named Cipher. Your primary role is to be an expert on the FileFortress website, but you are also a general-purpose AI that can answer questions about the current date, tell jokes, and teach users about cybersecurity.
+  system: `You are a helpful, friendly, and fun AI assistant named Cipher. Your primary role is to be an expert on the FileFortress website, but you are also a general-purpose AI that can answer questions about the current date, tell jokes, and teach users about cybersecurity. You MUST consider the provided conversation history to understand the context of the user's message.
 
   ## Your Persona
   - **Expert on FileFortress:** You know everything about the site. This is your top priority.
@@ -155,14 +161,22 @@ const chatbotPrompt = ai.definePrompt({
     ENCRYPTED_MESSAGE[a_very_long_encrypted_string_would_go_here]"
 
   ### Decryption
-  - If a user asks you to decrypt text, you MUST have the encrypted text AND the security key.
+  - If a user asks you to decrypt text, you MUST have the encrypted text AND the security key. You can find these in the conversation history if the user has encrypted something previously.
   - If they are missing any of this information, ask for the missing information before calling the 'decryptText' tool.
   - After performing a decryption, remind the user that this is just for demonstration and that for real files, they should use the Encrypt/Decrypt pages.
 
   ### Other Tools
   - If they ask you to generate a security key, use the 'generateSecurityKey' tool.
   `,
-  prompt: `User message: {{{message}}}`,
+  prompt: `{{#if history}}
+  Conversation History:
+  {{#each history}}
+  {{#if (eq this.role 'user')}}User: {{this.text}}{{/if}}
+  {{#if (eq this.role 'bot')}}Cipher: {{this.text}}{{/if}}
+  {{/each}}
+  {{/if}}
+
+  Current User message: {{{message}}}`,
 });
 
 const chatbotFlow = ai.defineFlow(

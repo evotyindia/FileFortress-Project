@@ -26,7 +26,7 @@ export default function SupportPage() {
               </div>
               <div>
                 <CardTitle className="font-headline text-2xl">AI Assistant</CardTitle>
-                <CardDescription className="text-lg">For questions about encryption, passwords, and how to use the app.</CardDescription>
+                <CardDescription className="text-lg text-muted-foreground">For questions about encryption, passwords, and how to use the app.</CardDescription>
               </div>
             </CardHeader>
             <CardContent>
@@ -43,7 +43,7 @@ export default function SupportPage() {
               </div>
               <div>
                 <CardTitle className="font-headline text-2xl">Email Support</CardTitle>
-                <CardDescription className="text-lg">For technical issues, feedback, or other inquiries.</CardDescription>
+                <CardDescription className="text-lg text-muted-foreground">For technical issues, feedback, or other inquiries.</CardDescription>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">

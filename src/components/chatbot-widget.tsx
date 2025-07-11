@@ -37,7 +37,7 @@ const EncryptedMessage = ({ text }: { text: string }) => {
 
     if (!encryptedText) {
       return (
-        <div className="prose prose-sm dark:prose-invert break-words">
+        <div className="prose prose-sm dark:prose-invert break-words max-w-none">
            <ReactMarkdown>{text}</ReactMarkdown>
         </div>
       );
@@ -63,7 +63,7 @@ const EncryptedMessage = ({ text }: { text: string }) => {
                 Copy Key
               </Button>
             </div>
-            <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider break-all">{securityKey}</p>
+            <p className="font-mono text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider break-all">{securityKey}</p>
           </div>
         )}
 
@@ -81,7 +81,7 @@ const EncryptedMessage = ({ text }: { text: string }) => {
               </Button>
             </div>
           </div>
-          <p className="font-code text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider break-all">
+          <p className="font-mono text-muted-foreground p-2 rounded-md bg-background/50 border text-xs tracking-wider break-all">
             {showEncrypted ? encryptedText : '********************'}
           </p>
         </div>
@@ -218,6 +218,8 @@ export function ChatbotWidget() {
                                 <ReactMarkdown
                                   components={{
                                     p: ({node, ...props}) => <p className="my-2" {...props} />,
+                                    ul: ({node, ...props}) => <ul className="my-2" {...props} />,
+                                    ol: ({node, ...props}) => <ol className="my-2" {...props} />,
                                   }}
                                 >{message.text}</ReactMarkdown>
                             </div>

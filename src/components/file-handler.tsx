@@ -227,6 +227,10 @@ export function FileHandler({ mode }: FileHandlerProps) {
       } else {
         const { blob, metadata } = await decryptFile(file, password, securityKey);
         downloadBlob(blob, metadata.name);
+        toast({
+          title: "Decryption Successful",
+          description: `Your file "${metadata.name}" has been downloaded.`,
+        });
         resetForm();
       }
     } catch (error) {
@@ -236,7 +240,8 @@ export function FileHandler({ mode }: FileHandlerProps) {
         title: `${mode === 'encrypt' ? 'Encryption' : 'Decryption'} Failed`,
         description: error instanceof Error ? error.message : "An unknown error occurred.",
       });
-      setIsProcessing(false);
+    } finally {
+        setIsProcessing(false);
     }
   };
 
@@ -260,7 +265,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                         id="generated-key"
                         readOnly
                         value={encryptedResult.securityKey}
-                        className="h-28 text-base font-code pr-12"
+                        className="h-28 text-base font-mono pr-12"
                         placeholder="Your generated security key"
                     />
                     <Button type="button" variant="outline" onClick={() => handleCopyKey(encryptedResult.securityKey)} size="icon" className="absolute top-2 right-2 h-9 w-9 flex-shrink-0">
@@ -274,7 +279,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 <div className="flex items-start gap-4">
                     <AlertTriangle className="h-8 w-8" />
                     <div className="flex-1">
-                      <AlertTitle className="font-headline text-lg m-0">Crucial: Save Your Keys!</AlertTitle>
+                      <AlertTitle className="font-headline text-xl m-0">Crucial: Save Your Keys!</AlertTitle>
                       <AlertDescription className="mt-2 text-lg">
                           You MUST save both your password and this security key.
                           <strong> Losing either will result in permanent data loss.</strong>
@@ -348,7 +353,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 <File className="w-16 h-16 text-primary"/>
                 <span className="font-medium text-lg mt-2">{file.name}</span>
                 <span className="text-base text-muted-foreground">{Math.round(file.size / 1024)} KB</span>
-                <Button variant="link" size="sm" onClick={(e) => { e.stopPropagation(); setFile(null); setSecurityKey(''); }}>
+                <Button variant="link" size="sm" onClick={(e) => { e.stopPropagation(); resetForm(); }}>
                   Remove file
                 </Button>
               </div>
@@ -366,7 +371,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="filename" className="text-lg">Encrypted Filename</Label>
-                  <div className="flex h-12 mt-2 w-full rounded-md border border-input bg-background text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                  <div className="flex items-center h-12 mt-2 w-full rounded-md border border-input bg-background text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 pr-2">
                       <Input
                           id="filename"
                           type="text"
@@ -378,13 +383,10 @@ export function FileHandler({ mode }: FileHandlerProps) {
                           className="h-auto text-lg border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 flex-1"
                       />
                       <span className="flex items-center px-3 text-muted-foreground bg-transparent">.fortress</span>
+                      <Button type="button" variant="ghost" size="icon" onClick={handleRandomizeName} disabled={!file || isGeneratingName} className="flex-shrink-0 h-9 w-9">
+                          {isGeneratingName ? <Loader2 className="animate-spin" /> : <Wand2 className="h-5 w-5"/>}
+                      </Button>
                   </div>
-                </div>
-                <div className="flex justify-center">
-                    <Button type="button" variant="secondary" onClick={handleRandomizeName} disabled={!file || isGeneratingName}>
-                        {isGeneratingName ? <Loader2 className="animate-spin" /> : <Wand2 className="mr-2 h-5 w-5"/>}
-                        Randomize
-                    </Button>
                 </div>
               </div>
             )}
@@ -407,13 +409,16 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 </Button>
               </div>
                {mode === 'encrypt' && password.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
-                    {passwordConditions.map(condition => (
-                        <div key={condition.label} className={cn("flex items-center text-sm", condition.regex.test(password) ? "text-green-600" : "text-muted-foreground")}>
-                            {condition.regex.test(password) ? <ShieldCheck className="w-4 h-4 mr-2" /> : <div className="w-4 h-4 mr-2" />}
-                            {condition.label}
-                        </div>
-                    ))}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 pt-2">
+                    {passwordConditions.map(condition => {
+                        const passes = condition.regex.test(password);
+                        return (
+                          <div key={condition.label} className={cn("flex items-center text-sm gap-2", passes ? "text-green-600" : "text-muted-foreground")}>
+                              {passes ? <CheckCircle2 className="w-4 h-4 flex-shrink-0" /> : <XCircle className="w-4 h-4 flex-shrink-0" />}
+                              <span>{condition.label}</span>
+                          </div>
+                        )
+                    })}
                 </div>
               )}
             </div>
@@ -440,12 +445,12 @@ export function FileHandler({ mode }: FileHandlerProps) {
                 </div>
                  {confirmPasswordBlurred && confirmPassword && (
                   <div className={cn(
-                    "flex items-center text-sm pt-1",
+                    "flex items-center text-sm pt-1 gap-2",
                     password === confirmPassword ? "text-green-600" : "text-destructive"
                   )}>
                     {password === confirmPassword ? 
-                      <CheckCircle2 className="w-4 h-4 mr-2" /> :
-                      <XCircle className="w-4 h-4 mr-2" />
+                      <CheckCircle2 className="w-4 h-4" /> :
+                      <XCircle className="w-4 h-4" />
                     }
                     {password === confirmPassword ? "Passwords match" : "Passwords do not match"}
                   </div>
@@ -462,7 +467,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
                             readOnly
                             placeholder="A key will be generated when you select a file"
                             value={securityKey}
-                            className="h-28 text-lg font-code pr-12 bg-muted/50"
+                            className="h-28 text-lg font-mono pr-12 bg-muted/50"
                         />
                          <Button type="button" variant="outline" onClick={() => handleCopyKey(securityKey)} size="icon" className="absolute top-2 right-2 h-9 w-9 flex-shrink-0" disabled={!securityKey}>
                             <Copy className="w-4 h-4" />
@@ -473,7 +478,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
             ) : (
                  <div className="space-y-2">
                     <Label htmlFor="security-key-decrypt" className="text-lg">Security Key</Label>
-                    <div className="grid sm:grid-cols-[1fr_auto_1fr] items-center gap-4">
+                    <div className="grid sm:grid-cols-[1fr_auto] items-center gap-4">
                         <Input
                             id="security-key-decrypt"
                             type="text"
@@ -484,11 +489,6 @@ export function FileHandler({ mode }: FileHandlerProps) {
                             className="h-12 text-lg"
                             autoComplete="off"
                         />
-                         <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground font-semibold">
-                            <hr className="w-full border-border sm:hidden" />
-                            <span className="whitespace-nowrap">OR</span>
-                             <hr className="w-full border-border sm:hidden" />
-                        </div>
                         <input
                             type="file"
                             accept=".txt"
@@ -509,7 +509,7 @@ export function FileHandler({ mode }: FileHandlerProps) {
               <AlertTriangle className="h-8 w-8" />
               <div className="flex-1">
                 <AlertTitle className="font-headline text-lg">Important: Save Your Keys!</AlertTitle>
-                <AlertDescription className="mt-2 text-lg">
+                <AlertDescription className="mt-2 text-lg text-destructive-foreground/90">
                   Both your password AND the security key are required to unlock your files. FileFortress does <strong>NOT</strong> store these keys.
                   <br />
                   <strong>Lose them, and your files are gone forever.</strong> Please keep them safe and backed up!

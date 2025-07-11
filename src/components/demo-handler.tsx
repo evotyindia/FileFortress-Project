@@ -72,9 +72,9 @@ export function DemoHandler() {
   };
 
   return (
-    <div className="grid md:grid-cols-3 gap-8 items-start">
+    <div className="grid lg:grid-cols-3 gap-8 items-start">
       {/* Input Card */}
-      <Card className="w-full">
+      <Card className="w-full lg:col-span-1">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">1. Your Data</CardTitle>
           <CardDescription>Enter the text and keys for the demo.</CardDescription>
@@ -128,7 +128,7 @@ export function DemoHandler() {
       </Card>
 
       {/* Actions and Results */}
-      <div className="w-full space-y-8 flex flex-col items-center">
+      <div className="w-full space-y-8 flex flex-col items-center lg:col-span-1">
         <div className="flex flex-col items-center w-full">
             <Button onClick={handleEncrypt} disabled={isProcessing} className="w-full text-base py-6">
             {isProcessing ? <Loader2 className="animate-spin" /> : 'Encrypt'}
@@ -143,7 +143,7 @@ export function DemoHandler() {
                     <Textarea 
                     readOnly 
                     value={encryptedText} 
-                    className="font-code min-h-[140px] text-sm"
+                    className="font-mono min-h-[140px] text-sm"
                     placeholder="Encrypted output will appear here..."
                     />
                     <Button variant="link" size="sm" className="p-0 h-auto mt-2 text-base" onClick={() => handleCopyKey(encryptedText, 'Encrypted text')}>Copy</Button>
@@ -174,7 +174,7 @@ export function DemoHandler() {
       </div>
       
       {/* Explanation Card */}
-      <Card className="w-full md:col-start-3 md:row-start-1">
+      <Card className="w-full lg:col-span-1 lg:row-start-1 lg:col-start-3">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">How It Works</CardTitle>
         </CardHeader>
@@ -186,7 +186,7 @@ export function DemoHandler() {
             <li><strong>Encryption:</strong> The derived key is used with the AES-GCM algorithm to encrypt your text into an unreadable format.</li>
             <li><strong>Decryption:</strong> The process is reversed. The same password and key must be provided to derive the exact same key and unlock the data.</li>
           </ol>
-          <p className="font-bold text-foreground">Nothing you enter here is sent to any server. It's all done on your device.</p>
+          <p className="font-semibold text-foreground">Nothing you enter here is sent to any server. It's all done on your device.</p>
         </CardContent>
       </Card>
 

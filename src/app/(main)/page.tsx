@@ -12,14 +12,14 @@ export default function DashboardPage() {
           <h1 className="text-6xl md:text-7xl font-bold font-headline tracking-tight text-primary">
             FileFortress
           </h1>
-          <p className="mt-6 max-w-3xl mx-auto text-xl md:text-xl text-muted-foreground">
+          <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
             Secure your files with robust, client-side encryption. Your data is encrypted and decrypted directly in your browser. Nothing is ever sent to our servers.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
-            <Button asChild size="lg" className="w-full sm:w-auto text-lg py-7">
+            <Button asChild size="lg" className="w-full sm:w-auto text-lg py-7 px-8">
               <Link href="/encrypt">Encrypt a File <Lock className="ml-2 h-5 w-5" /></Link>
             </Button>
-            <Button asChild variant="secondary" size="lg" className="w-full sm:w-auto text-lg py-7">
+            <Button asChild variant="secondary" size="lg" className="w-full sm:w-auto text-lg py-7 px-8">
               <Link href="/decrypt">Decrypt a File <Unlock className="ml-2 h-5 w-5" /></Link>
             </Button>
           </div>
@@ -36,7 +36,7 @@ export default function DashboardPage() {
                  <CardTitle className="font-headline text-2xl">Ultimate Security</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-lg">
+                <CardDescription className="text-lg text-muted-foreground">
                   Using the Web Crypto API with AES-GCM encryption, your files are secured with industry-standard algorithms before they ever leave your machine.
                 </CardDescription>
               </CardContent>
@@ -49,7 +49,7 @@ export default function DashboardPage() {
                 <CardTitle className="font-headline text-2xl">Complete Privacy</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-lg">
+                <CardDescription className="text-lg text-muted-foreground">
                   We are a zero-knowledge service. We don't store your files, passwords, or keys. Your privacy is paramount and guaranteed.
                 </CardDescription>
               </CardContent>
@@ -62,7 +62,7 @@ export default function DashboardPage() {
                 <CardTitle className="font-headline text-2xl">Open & Transparent</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-lg">
+                <CardDescription className="text-lg text-muted-foreground">
                   FileFortress is built on open web standards. The entire process is transparent and can be verified. See how it works on our Demo page.
                 </CardDescription>
               </CardContent>
@@ -78,7 +78,7 @@ export default function DashboardPage() {
               Follow three easy steps to protect your data.
             </p>
           </div>
-          <div className="relative mt-16 grid md:grid-cols-3 gap-8 items-start">
+          <div className="relative mt-16 grid md:grid-cols-3 gap-y-12 gap-x-8 items-start">
             <div className="absolute w-full h-1 bg-border/50 top-8 left-0 hidden md:block" />
             <div className="relative bg-background p-2 flex flex-col items-center text-center">
                 <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-bold font-headline mb-6 z-10">1</div>

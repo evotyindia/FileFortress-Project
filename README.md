@@ -75,7 +75,7 @@ Follow these instructions to set up and run the project locally for development 
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/filefortress.git
+    git clone https://github.com/evotyindia/FileFortress-Project.git
     cd filefortress
     ```
 
@@ -182,4 +182,4 @@ This application is configured for deployment on **Firebase App Hosting**. To de
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute, please fork the repository and create a pull request. For major changes, please open an issue first to discuss what you would like to change.
+N/A

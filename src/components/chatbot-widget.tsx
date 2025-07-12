@@ -205,7 +205,7 @@ export function ChatbotWidget() {
               <Bot className="text-primary"/> Cipher
             </CardTitle>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-              <X className="h-4 w-4" />
+              <X className="h-10 w-10" />
             </Button>
           </CardHeader>
           <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>

@@ -1,4 +1,4 @@
-# FileFortress - Comprehensive Project Specifications & Architecture
+# FileFortress - Ultra-Detailed Project Specifications & Architecture
 
 This document provides a highly detailed specification for the FileFortress project, covering brand identity, user architecture, core feature processing, and data models. It serves as the primary blueprint for development and understanding the application's functionality.
 
@@ -6,105 +6,150 @@ This document provides a highly detailed specification for the FileFortress proj
 
 ## 1. Brand Identity & Design System
 
-The brand identity is engineered to be trustworthy, modern, and secure, reflecting its privacy-centric mission.
+The brand identity is engineered to be trustworthy, modern, and secure, reflecting its privacy-centric mission. The design system is implemented via Tailwind CSS and CSS variables in `src/app/globals.css`.
 
 ### 1.1. Typography System
 
-The font selection creates a clear visual hierarchy, enhancing readability and user experience.
+The font selection creates a clear visual hierarchy, enhancing readability and user experience. This is configured in `src/app/layout.tsx` and applied via utility classes in `tailwind.config.ts`.
 
--   **Heading & Brand Font:** `Poppins`
-    -   **Usage:** Main page titles, navigation branding, and major section headers.
-    -   **Weights:** Bold for H1/H2 titles.
-    -   **Rationale:** Poppins was chosen for its clean, geometric, and friendly letterforms, which convey a sense of modern authority and approachability.
+-   **Heading & Brand Font:** `Poppins` (via `--font-poppins` variable)
+    -   **Usage:** Applied with the `font-headline` utility class. Used for the site logo, main page titles (H1), and major section headers (H2).
+    -   **Typographic Scale:**
+        -   **H1 (`text-5xl`, `md:text-6xl`):** For main page titles (e.g., "About FileFortress").
+        -   **H2 (`text-4xl`):** For major section titles (e.g., "Our Security Philosophy").
+        -   **Card Titles (`text-2xl`, `text-3xl`):** For `CardTitle` components.
+    -   **Weights:** Bold (`font-bold`) for titles, Semi-Bold (`font-semibold`) for subtitles.
+    -   **Rationale:** Poppins provides a modern authority that builds trust in the brand's security promises. Its geometric forms are clean and scalable.
 
--   **Body Content Font:** `PT Sans`
-    -   **Usage:** All body text, including paragraphs, descriptions, and form inputs.
-    -   **Weight:** Regular.
-    -   **Rationale:** PT Sans is a highly readable sans-serif font that pairs well with Poppins, ensuring clarity for detailed explanations and instructions.
+-   **Body Content Font:** `PT Sans` (via `--font-pt-sans` variable)
+    -   **Usage:** Applied with the `font-body` utility class as the default body font. Used for all paragraphs, descriptions, `CardDescription`, `AlertDescription`, and form inputs.
+    -   **Typographic Scale:**
+        -   **Large Paragraphs (`text-lg`, `md:text-xl`):** For hero section descriptions.
+        -   **Standard Body (`text-lg`):** For main content and descriptions for optimal readability.
+        -   **Form Inputs (`text-base`, `text-lg`):** To ensure clarity and legibility when entering data.
+    -   **Weight:** Regular (`font-normal`).
+    -   **Rationale:** PT Sans is a highly readable sans-serif that pairs well with Poppins, ensuring clarity for detailed explanations and instructions without causing user fatigue.
+
+-   **Monospaced Font:** `monospace`
+    -   **Usage:** Applied with the `font-mono` utility class. Used exclusively for displaying the Security Key and encrypted text outputs to visually distinguish them as machine-generated data.
 
 ### 1.2. Color Palette & Theming
 
-The color scheme is managed via CSS custom properties (variables) in `src/app/globals.css`, allowing for seamless light/dark mode switching.
+The color scheme is managed via HSL CSS custom properties in `src/app/globals.css`, enabling seamless light/dark mode switching.
 
--   **Primary Color:**
-    -   `#6246EA` (Deep Purple): The foundational color used for primary actions, links, and highlights. It conveys a sense of security, trust, and sophistication.
+-   **Primary Color (`--primary`):** `hsl(250 80% 63%)` - `#6246EA` (Deep Purple)
+    -   **Usage:** The foundational color for primary actions (`Button` default variant), links, icons, and highlights.
+    -   **Rationale:** Conveys a sense of security, trust, and sophistication.
 
--   **Accent Color:**
-    -   `#2DD4FF` (Teal): A bright, contrasting color used for secondary highlights and interactive elements to draw the user's attention.
+-   **Accent Color (`--accent`):** `hsl(190 100% 59%)` - `#2DD4FF` (Teal)
+    -   **Usage:** A bright, contrasting color used for secondary highlights, hover states on some components (`Button` outline variant), and to draw attention.
 
--   **Background Color:**
-    -   `#F5F5F5` (Very Light Gray): Used for the main background in light mode to ensure readability and provide a clean, neutral canvas for the content.
+-   **Background Color (`--background`):**
+    -   **Light Mode:** `hsl(0 0% 96.1%)` - `#F5F5F5` (Very Light Gray)
+    -   **Dark Mode:** `hsl(240 10% 3.9%)`
+    -   **Rationale:** Provides a clean, neutral canvas. The dark mode color is a deep charcoal, not pure black, to reduce eye strain.
 
--   **Thematic Application (Light Mode):**
-    -   **Background (`--background`):** `#F5F5F5`
-    -   **Text (`--foreground`):** Dark Gray/Black for high contrast.
-    -   **Primary UI (`--primary`):** `#6246EA`
-    -   **Accent (`--accent`):** `#2DD4FF`
+-   **Destructive Color (`--destructive`):** `hsl(0 84.2% 60.2%)`
+    -   **Usage:** For critical warnings (`Alert` with `destructive` variant) and error states. High contrast ensures it's unmissable.
 
--   **Thematic Application (Dark Mode):**
-    -   **Background (`--background`):** A dark charcoal or deep blue to complement the primary purple.
-    -   **Text (`--foreground`):** A soft off-white to reduce glare.
-    -   **Primary UI (`--primary`):** `#6246EA` (can be slightly brightened for better contrast).
-    -   **Accent (`--accent`):** `#2DD4FF`
+-   **UI State Implementation:**
+    -   **Hover:** Buttons and interactive elements use a slightly darker shade of their base color (`bg-primary/90`) or the accent color (`hover:bg-accent`) for feedback.
+    -   **Focus:** Input fields and buttons use a ring outline (`focus-visible:ring-2 focus-visible:ring-ring`) with the `--ring` variable set to the primary color.
+    -   **Disabled:** Elements use `disabled:opacity-50` and `disabled:pointer-events-none` for a clear, non-interactive state.
 
 ---
 
 ## 2. Page Architecture
 
-The application's pages are designed to guide the user through the core encryption and decryption flows logically.
+The application's pages guide the user through the core encryption and decryption flows logically.
 
--   **Dashboard (`/`):** The main landing page. It provides a high-level overview of FileFortress, highlights key features (e.g., Ultimate Security, Complete Privacy), and includes a simple "How it Works" section with prominent calls-to-action to the Encrypt and Decrypt pages. The Gemini AI assistant is also featured here.
+-   **Dashboard (`/`):**
+    -   **User Goal:** Understand the app's value proposition and navigate to core tasks.
+    -   **Primary Components:** `Button`, `Card`, `Lock`, `Unlock` icons.
+    -   **Key UI Elements:** Features prominent "Encrypt" and "Decrypt" `Button`s. Uses `Card`s to highlight key features. A step-by-step "How it Works" section visually guides the user. The `ChatbotWidget` is available globally from this page.
 
--   **Encryption Page (`/encrypt`):** This page contains the primary file encryption interface. It includes a file upload area (drag-and-drop and browse), a password input field with strength indicators, a read-only field for the generated security key, and a clear security warning about the importance of saving both the password and the key.
+-   **Encryption Page (`/encrypt`):**
+    -   **User Goal:** Securely encrypt a file.
+    -   **Primary Components:** `FileHandler` (in "encrypt" mode).
+    -   **Key UI Elements:** A drag-and-drop file input area, password fields with strength indicators and show/hide toggles, a read-only field for the generated security key, and an `Alert` with `variant="destructive"` to warn about saving credentials.
 
--   **Decryption Page (`/decrypt`):** This page mirrors the encryption page's layout for consistency. It features a file upload area for the `.fortress` file, and input fields for the user's password and security key. It also includes the same security warning.
+-   **Decryption Page (`/decrypt`):**
+    -   **User Goal:** Securely decrypt a `.fortress` file.
+    -   **Primary Components:** `FileHandler` (in "decrypt" mode).
+    -   **Key UI Elements:** Mirrors the encryption page for consistency. Features a file upload area for the `.fortress` file, and input fields for the user's password and security key.
 
--   **About Page (`/about`):** Provides detailed information about the mission of FileFortress, its client-side security philosophy (Zero-Knowledge), and a step-by-step overview of the underlying cryptographic process (AES-GCM, PBKDF2).
+-   **About Page (`/about`):**
+    -   **User Goal:** Understand the company's mission and the technology behind the service.
+    -   **Primary Components:** `Card`.
+    -   **Key UI Elements:** Uses `Card` components to structure information logically. Features icons like `Cpu`, `ServerOff`, and `ShieldCheck` to visually reinforce concepts like client-side processing and zero-knowledge.
 
--   **Support Page (`/support`):** A simple page offering help. It directs users to the AI assistant for common questions and provides a contact email for technical support, while clearly stating that password and key recovery is impossible due to the app's design.
+-   **Support Page (`/support`):**
+    -   **User Goal:** Find help for common questions or contact support for technical issues.
+    -   **Primary Components:** `Card`, `Alert`.
+    -   **Key UI Elements:** Directs users to the AI assistant for common questions. Provides a contact email while using a prominent `Alert` to state that password/key recovery is impossible.
 
--   **Demo Page (`/demo`):** An interactive tool that allows users to see the encryption/decryption process in action with a simple text snippet instead of a file. This helps build trust and understanding by demonstrating the technology transparently.
+-   **Demo Page (`/demo`):**
+    -   **User Goal:** Understand the encryption process interactively without uploading a real file.
+    -   **Primary Components:** `DemoHandler`.
+    -   **Key UI Elements:** Features `Textarea` for input and output, `Input` for password/key, and `Button`s to trigger encryption/decryption. The layout visually flows from left to right, showing the transformation of data.
 
 ---
 
 ## 3. Core Features: Processing & Data Flow
 
-This section details the end-to-end process for the application's core features.
+This section details the end-to-end technical process for the application's core features.
 
 ### 3.1. File Encryption
 
 -   **Objective:** To securely encrypt a user's file entirely within their browser.
--   **Processing & Data Flow (Client-Side):**
-    1.  **Input:** The user uploads a `File`, enters a `password`, and is shown a newly `generatedSecurityKey`.
-    2.  **Key Derivation:** The `password` and `securityKey` are combined and fed into a Key Derivation Function (PBKDF2) along with a newly generated random `salt`. This process performs thousands of hashing rounds to produce a strong, uniform 256-bit encryption key.
-    3.  **Encryption:** The file's data is read into an `ArrayBuffer` and encrypted using the derived key with the Advanced Encryption Standard in Galois/Counter Mode (AES-GCM), along with a newly generated random `iv` (Initialization Vector).
-    4.  **Packaging:** The final downloadable `.fortress` file is a `Blob` constructed by concatenating the `salt`, `iv`, file metadata (name and type), and the encrypted file content.
-    5.  **Output:** The user is prompted to download the encrypted `.fortress` file and a separate `.txt` file containing their security key.
+-   **Technical Implementation (`/lib/crypto.ts`):**
+    1.  **Input:** User provides a `File` object and a `password` string. The `generateSecurityKey()` function creates a cryptographically random 32-byte key.
+    2.  **Key Derivation (`deriveKey` function):**
+        -   A new random `salt` (16 bytes, `Uint8Array`) is generated using `crypto.getRandomValues`.
+        -   The `password` and `securityKey` are concatenated and encoded into a `Uint8Array`.
+        -   `crypto.subtle.importKey` creates a raw key material from the combined password.
+        -   `crypto.subtle.deriveKey` uses **PBKDF2** with **SHA-256**, the `salt`, and **100,000 iterations** to produce a strong, uniform 256-bit AES-GCM `CryptoKey`.
+    3.  **Encryption (`encryptFile` function):**
+        -   A new random `iv` (Initialization Vector, 12 bytes) is generated.
+        -   The file's data is read into an `ArrayBuffer`.
+        -   `crypto.subtle.encrypt` is called with the `"AES-GCM"` algorithm, the derived `CryptoKey`, and the `iv`.
+    4.  **Packaging (File Structure):** The final downloadable `.fortress` file is a `Blob` constructed by concatenating the following `Uint8Array`s in order:
+        -   `Salt` (16 bytes)
+        -   `IV` (12 bytes)
+        -   `Metadata Length` (2 bytes, as `Uint16Array`)
+        -   `File Metadata` (variable bytes, JSON string of `{ name, type }`)
+        -   `Encrypted File Content` (remaining bytes)
+    5.  **Output:** The user is prompted to download the encrypted `.fortress` `Blob` and a separate `.txt` file containing their security key.
 
 ### 3.2. File Decryption
 
 -   **Objective:** To securely decrypt a `.fortress` file using the user's password and security key.
--   **Processing & Data Flow (Client-Side):**
-    1.  **Input:** The user uploads the encrypted `.fortress` file, enters their `password`, and provides their `securityKey`.
-    2.  **Unpackaging:** The application reads the `.fortress` file into an `ArrayBuffer` and extracts the `salt`, `iv`, file metadata, and encrypted content in the reverse order they were packaged.
-    3.  **Key Derivation:** The `password` and `securityKey` are used with the extracted `salt` to re-derive the exact same 256-bit encryption key via PBKDF2.
-    4.  **Decryption:** The derived key and extracted `iv` are used with AES-GCM to decrypt the file's content. If the password or key is incorrect, this step will fail, throwing an error.
-    5.  **Output:** If successful, the decrypted file content is turned back into a `Blob` with its original file type, and the user's browser prompts them to download the original file.
+-   **Technical Implementation (`/lib/crypto.ts`):**
+    1.  **Input:** The user uploads the encrypted `.fortress` file and provides their `password` and `securityKey`.
+    2.  **Unpackaging (`decryptFile` function):** The app reads the file into an `ArrayBuffer` and uses `ArrayBuffer.slice()` to extract the components in reverse order based on their known byte lengths:
+        -   `salt` is read from bytes 0-16.
+        -   `iv` is read from bytes 16-28.
+        -   `metadataLength` is read from bytes 28-30.
+        -   `metadataBytes` are read from byte 30 for `metadataLength` bytes.
+        -   The remaining buffer is the `encryptedContent`.
+    3.  **Key Derivation (`deriveKey` function):** The `password`, `securityKey`, and extracted `salt` are used to re-derive the exact same 256-bit `CryptoKey` via the same PBKDF2 process.
+    4.  **Decryption (`decryptFile` function):** `crypto.subtle.decrypt` is called with the derived key and extracted `iv`. This step will fail and throw an error if the password or key is incorrect, which is caught in a `try...catch` block.
+    5.  **Output:** If successful, the decrypted `ArrayBuffer` is turned back into a `Blob` with its original file type, and the user's browser prompts them to download the original file.
 
 ### 3.3. Gemini AI Assistant
 
 -   **Objective:** To provide a helpful AI chatbot that can answer questions about the website, explain cybersecurity concepts, and demonstrate the encryption/decryption process.
--   **Processing & Data Flow:**
-    1.  **Initialization:** The `ChatbotWidget` component is rendered on the dashboard.
-    2.  **User Interaction:** The user sends a message.
-    3.  **API Call (Client to Genkit Flow):** The `chatbot` function is called, passing the user's message and the conversation history to the `chatbotFlow` on the server.
-    4.  **Backend Processing (Genkit Flow):**
-        -   The flow's prompt instructs the AI on its persona (Cipher, a friendly security expert) and its capabilities.
-        -   The prompt is populated with details about FileFortress pages, its security model, and the current date.
-        -   The AI has access to `Tools` for `encryptText`, `decryptText`, and `generateSecurityKey` to perform live demonstrations.
-    5.  **AI Generation (Gemini):** Gemini processes the user's question within the context of the system prompt and conversation history. If the user's request involves a demonstration (e.g., "Encrypt 'hello world'"), the AI will decide to use the appropriate tool.
-    6.  **Response (Server to Client):** The structured JSON output (`ChatbotOutputSchema`), containing the text response and any suggested page links, is returned to the client.
-    7.  **Rendering (Client-Side):** The chat widget updates with the AI's response. If the response includes encrypted text, a special `EncryptedMessage` component is used to format it with "Copy" and "Show/Hide" buttons.
+-   **Technical Implementation (`/ai/flows/chatbot-flow.ts`):**
+    1.  **Client Interaction:** The `ChatbotWidget` component manages the UI state, including the message history (`messages`).
+    2.  **API Call:** On send, the `chatbot` function is called, passing `message` and `history`.
+    3.  **Backend Processing (`chatbotFlow`):**
+        -   The flow's `system` prompt defines the AI's persona ("Cipher") and its knowledge base (pages, security model, current date).
+        -   The prompt explicitly defines the response format using `ChatbotOutputSchema` and provides instructions for tool use.
+    4.  **AI Tool Use:**
+        -   The AI has access to `Tools` for `encryptText`, `decryptText`, and `generateSecurityKey`, which wrap the functions from `lib/crypto`.
+        -   If a user asks "encrypt 'hello world'", the AI decides to call the `encryptText` tool. The result is returned to the AI, which then formats it according to the strict "CRITICAL FORMATTING" rules in the prompt (e.g., `SECURITY_KEY[...]`).
+    5.  **AI Generation (Gemini):** Gemini processes the user's question, history, and tool outputs to generate a response that matches `ChatbotOutputSchema`.
+    6.  **Response & Rendering:** The structured JSON is returned. The `ChatbotWidget` uses a special `EncryptedMessage` component to parse and render the formatted encrypted text with "Copy" and "Show/Hide" buttons. Suggested page links are rendered as `Button`s.
 
 ---
 
@@ -112,9 +157,22 @@ This section details the end-to-end process for the application's core features.
 
 The UI is built with **ShadCN UI**, leveraging its composition-first approach for consistency and accessibility.
 
--   **`Card`:** The foundational UI element. Used as the primary container for the main file handlers, feature descriptions on the dashboard, and information sections on the About and Support pages.
--   **`Input` / `Textarea`:** Core components for all user input, including passwords, security keys, and text for the demo.
--   **`Button`:** Used for all primary actions like "Encrypt File," "Decrypt File," and "Generate Key." Variants (`primary`, `secondary`, `ghost`) are used to create a clear visual hierarchy of actions.
--   **`Alert`:** Used to display critical security warnings on the Encrypt and Decrypt pages, using the `destructive` variant to ensure users pay close attention.
--   **`ScrollArea`:** Implemented in the `ChatbotWidget` to ensure the conversation history is scrollable.
--   **`Sheet`:** Used for the mobile navigation menu to provide a clean, off-canvas experience on smaller screens.
+-   **`Card`:** The foundational UI container. Used in `FileHandler` for the main form, `DashboardPage` for feature callouts, and `AboutPage` for information sections. Provides consistent padding, border, and shadow.
+
+-   **`Input` / `Textarea`:** Core components for all user input. Used in `FileHandler` and `DemoHandler`. `FileHandler` uses two `Input`s of `type="password"` for password confirmation, with state managed to toggle visibility.
+
+-   **`Button`:** Used for all primary actions.
+    -   **Default Variant:** Used for primary CTAs like "Encrypt File."
+    -   **Secondary Variant:** Used for less critical actions like "Download Security Key" or "Generate Key."
+    -   **Link Variant:** Used for non-disruptive actions like "Remove file" or "Encrypt Another File."
+    -   **Ghost Variant:** Used for icon-only buttons like the password visibility toggle.
+
+-   **`Alert`:** Used in `FileHandler` with `variant="destructive"` to display the critical security warning. The `AlertTriangle` icon is included for immediate visual emphasis.
+
+-   **`Label`:** Used consistently for all form fields to ensure accessibility by linking the label's `htmlFor` attribute to the input's `id`.
+
+-   **`Sheet`:** Used for the mobile navigation menu in `Navbar`. It provides a clean, off-canvas experience on smaller screens, triggered by a `Button` with the `Menu` icon.
+
+-   **`ScrollArea`:** Implemented in the `ChatbotWidget` to ensure the conversation history is scrollable while the header and footer remain fixed.
+
+    

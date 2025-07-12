@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useCallback, useEffect, useRef } from "react";
@@ -368,25 +369,27 @@ export function FileHandler({ mode }: FileHandlerProps) {
 
           <div className="space-y-6">
              {mode === 'encrypt' && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="filename" className="text-lg">Encrypted Filename</Label>
-                  <div className="flex items-center h-12 mt-2 w-full rounded-md border border-input bg-background text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 pr-2">
-                      <Input
-                          id="filename"
-                          type="text"
-                          placeholder="Enter a filename"
-                          value={filename}
-                          onChange={(e) => setFilename(e.target.value.substring(0, 25))}
-                          required
-                          maxLength={25}
-                          className="h-auto text-lg border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 flex-1"
-                      />
-                      <span className="flex items-center px-3 text-muted-foreground bg-transparent">.fortress</span>
-                      <Button type="button" variant="ghost" size="icon" onClick={handleRandomizeName} disabled={!file || isGeneratingName} className="flex-shrink-0 h-9 w-9">
-                          {isGeneratingName ? <Loader2 className="animate-spin" /> : <Wand2 className="h-5 w-5"/>}
-                      </Button>
+              <div className="space-y-2">
+                <Label htmlFor="filename" className="text-lg">Encrypted Filename</Label>
+                <div className="flex items-stretch gap-2 mt-2">
+                  <div className="relative flex-grow">
+                     <Input
+                        id="filename"
+                        type="text"
+                        placeholder="Enter a filename"
+                        value={filename}
+                        onChange={(e) => setFilename(e.target.value.substring(0, 25))}
+                        required
+                        maxLength={25}
+                        className="h-12 text-lg pr-[90px]"
+                    />
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center px-3 text-muted-foreground bg-transparent pointer-events-none">.fortress</span>
                   </div>
+
+                  <Button type="button" variant="secondary" onClick={handleRandomizeName} disabled={!file || isGeneratingName} className="h-12 text-base px-3">
+                      {isGeneratingName ? <Loader2 className="animate-spin w-5 h-5" /> : <Wand2 className="w-5 h-5 mr-2"/>}
+                      {isGeneratingName ? "" : "Suggest Name"}
+                  </Button>
                 </div>
               </div>
             )}

@@ -200,12 +200,12 @@ export function ChatbotWidget() {
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-opacity duration-300 ease-in-out", !isOpen ? "opacity-0 pointer-events-none" : "opacity-100")}>
         <Card ref={cardRef} className="w-[350px] h-[500px] flex flex-col shadow-2xl">
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
             <CardTitle className="font-headline flex items-center gap-2">
               <Bot className="text-primary"/> Cipher
             </CardTitle>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-              <X className="h-10 w-10" />
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8">
+              <X className="h-4 w-4" />
             </Button>
           </CardHeader>
           <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
